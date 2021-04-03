@@ -3,7 +3,9 @@ COMPILER Ejemplo
 /*--------------Scanner Specification----------*/
 .)
 
-CHARACTERS 
+(.Comentario en una linea.)
+
+CHARACTERS (.Comentario con codigo.)
 
 letter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".
 digit= "0123456789".

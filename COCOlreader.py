@@ -2,6 +2,9 @@ import sys
 
 
 def test():
+    '''
+    Finaliza la ejecucion del programa
+    '''
     sys.exit()
 
 
@@ -19,17 +22,67 @@ def getCompilerId(linea):
         print("ERROR")
 
 
-path = './test.atg'
-file = open(path, 'r')
-listaOriginal = file.readlines()
+def openFile(path):
+    '''
+    Abre el archivo y retorna una lista con su
+    contenido
+    '''
+    file = open(path, 'r')
+    return file.readlines()
 
-listaLimpia = []
 
-# Se eliminan los \n y multiples espacios en blanco
-for element in listaOriginal:
-    if element.strip() != '':
-        listaLimpia.append(" ".join(element.strip().split()))
+def eliminarEspacios(listaSucia):
+    '''
+    Se eliminan los \n y multiples espacios en blanco
+    '''
+    listaLimpia = []
 
-getCompilerId(listaLimpia.pop(0))
+    for element in listaSucia:
+        if element.strip() != '':
+            listaLimpia.append(" ".join(element.strip().split()))
 
-print(listaLimpia.pop(0))
+    return listaLimpia
+
+
+def eliminarComentarios(lineas):
+    listaSinComentarios = []
+    comentarioAbierto = False
+
+    for linea in lineas:
+        print(f'''
+
+            DEBUG
+            linea = {linea}
+            comentarioAbierto = {comentarioAbierto}
+
+        ''')
+        if (linea.find('.)') != -1 and comentarioAbierto):
+            comentarioAbierto = False
+            continue
+
+        if (comentarioAbierto):
+            continue
+
+        if (linea.find('(.') != -1):
+
+            if (linea.find('.)') == -1):
+                # No termina el comentario en esa linea
+                comentarioAbierto = True
+            else:
+                if (len(linea[:linea.find('(.')]) > 0):
+                    listaSinComentarios.append(linea[:linea.find('(.')])
+        else:
+            listaSinComentarios.append(linea)
+
+    print(listaSinComentarios)
+
+
+if __name__ == "__main__":
+
+    listaLimpia = eliminarEspacios(openFile('./test.atg'))
+
+    eliminarComentarios(listaLimpia)
+
+    # getCompilerId(listaLimpia.pop(0))
+
+    # print(listaLimpia.pop(0))
