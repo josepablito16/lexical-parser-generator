@@ -48,6 +48,12 @@ def eliminarEspacios(listaSucia):
 
 
 def eliminarComentarios(lineas):
+    '''
+    Se eliminan comentarios
+     * de multiples lineas
+     * de una sola linea
+     * junto con codigo en la linea
+    '''
     listaSinComentarios = []
     comentarioAbierto = False
 
@@ -75,6 +81,9 @@ def eliminarComentarios(lineas):
 
 
 def identificarSeccion(linea):
+    '''
+        Valida que la linea contenga una seccion no consumida
+    '''
     if (linea.strip() in secciones and linea.strip() not in seccionesConsumidas):
         print(f'''
 			IDENTIFICADO <{linea.strip()}>
@@ -89,6 +98,10 @@ def identificarSeccion(linea):
 
 
 def separarSeccion(seccionActual, lista):
+    '''
+        Identifica las secciones del .atg y las separa
+        de forma recursiva
+    '''
     residuo = []
     seccionActualLista = []
     for i in range(len(lista)):
@@ -113,17 +126,15 @@ def separarSeccion(seccionActual, lista):
 if __name__ == "__main__":
 
     # Limpieza de archivo .atg
-
     listaLimpia = eliminarEspacios(openFile('./test.atg'))
 
     listaLimpia = eliminarComentarios(listaLimpia)
-    # print(listaLimpia)
 
     # Identificacion de informacion
 
     # Identificador de compilador
     getCompilerId(listaLimpia.pop(0))
 
-    # Characters
+    # Identificacion de secciones
     seccionInicial = identificarSeccion(listaLimpia.pop(0))
     separarSeccion(seccionInicial, listaLimpia)
