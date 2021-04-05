@@ -1,6 +1,7 @@
 import sys
 
 secciones = ['CHARACTERS', 'KEYWORDS', 'TOKENS', 'PRODUCTIONS']
+seccionesConsumidas = []
 
 
 def test():
@@ -19,33 +20,6 @@ def getCompilerId(linea):
         print(f'''
 			IDENTIFICADO <COMPILER>
 			ident = {linea[linea.find(" "):]}
-		''')
-    else:
-        print("ERROR")
-
-
-def getCharactersVerificacion(linea):
-    if linea.strip() == "CHARACTERS":
-        print('''
-			IDENTIFICADO <CHARACTERS>
-		''')
-    else:
-        print("ERROR")
-
-
-def getKeyWordsVerificacion(linea):
-    if linea.strip() == "KEYWORDS":
-        print('''
-			IDENTIFICADO <KEYWORDS>
-		''')
-    else:
-        print("ERROR")
-
-
-def getTokensVerificacion(linea):
-    if linea.strip() == "TOKENS":
-        print('''
-			IDENTIFICADO <TOKENS>
 		''')
     else:
         print("ERROR")
@@ -100,58 +74,40 @@ def eliminarComentarios(lineas):
     return listaSinComentarios
 
 
-def getCharactersSeccion(lista):
-    nuevaLista = []
-    characters = []
-    for i in range(len(lista)):
-        if (lista[i].strip() in secciones):
-            nuevaLista = lista[i:]
-            break
-        characters.append(lista[i])
+def identificarSeccion(linea):
+    if (linea.strip() in secciones and linea.strip() not in seccionesConsumidas):
+        print(f'''
+			IDENTIFICADO <{linea.strip()}>
+		''')
+        seccionesConsumidas.append(linea.strip())
+        return linea.strip()
 
-    print(f'''
-        characters = {characters}
+    if linea.strip()[0:3] == "END":
+        return "END"
 
-        resto = {nuevaLista}
-    ''')
-
-    return nuevaLista
+    print("ERROR")
 
 
-def getKeyWordsSeccion(lista):
-    nuevaLista = []
-    keywords = []
-    for i in range(len(lista)):
-        if (lista[i].strip() in secciones):
-            nuevaLista = lista[i:]
-            break
-        keywords.append(lista[i])
-
-    print(f'''
-        keywords = {keywords}
-
-        resto = {nuevaLista}
-    ''')
-
-    return nuevaLista
-
-
-def getTokensSeccion(lista):
-    nuevaLista = []
-    tokens = []
+def separarSeccion(seccionActual, lista):
+    residuo = []
+    seccionActualLista = []
     for i in range(len(lista)):
         if (lista[i].strip() in secciones or lista[i].strip()[0:3] == "END"):
-            nuevaLista = lista[i:]
+            residuo = lista[i:]
             break
-        tokens.append(lista[i])
+        seccionActualLista.append(lista[i])
 
     print(f'''
-        tokens = {tokens}
-
-        resto = {nuevaLista}
+        {seccionActual}
+        seccionActualLista = {seccionActualLista}
     ''')
 
-    return nuevaLista
+    siguienteSeccion = identificarSeccion(residuo.pop(0))
+    if (siguienteSeccion != "END"):
+        separarSeccion(siguienteSeccion, residuo)
+
+    if (siguienteSeccion == "END"):
+        print("IDENTIFICADO <END>")
 
 
 if __name__ == "__main__":
@@ -169,17 +125,5 @@ if __name__ == "__main__":
     getCompilerId(listaLimpia.pop(0))
 
     # Characters
-    getCharactersVerificacion(listaLimpia.pop(0))
-    listaLimpia = getCharactersSeccion(listaLimpia)
-
-    # KeyWords
-    getKeyWordsVerificacion(listaLimpia.pop(0))
-    listaLimpia = getKeyWordsSeccion(listaLimpia)
-
-    # Tokens
-    getTokensVerificacion(listaLimpia.pop(0))
-    getTokensSeccion(listaLimpia)
-
-    # print(listaLimpia)
-
-    # print(listaLimpia.pop(0))
+    seccionInicial = identificarSeccion(listaLimpia.pop(0))
+    separarSeccion(seccionInicial, listaLimpia)
