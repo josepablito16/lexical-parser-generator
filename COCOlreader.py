@@ -115,12 +115,33 @@ def separarSeccion(seccionActual, lista):
         seccionActualLista = {seccionActualLista}
     ''')
 
+    # SEPARAR SECCIONES
+    separarSets(seccionActualLista)
+
     siguienteSeccion = identificarSeccion(residuo.pop(0))
     if (siguienteSeccion != "END"):
         separarSeccion(siguienteSeccion, residuo)
 
     if (siguienteSeccion == "END"):
         print("IDENTIFICADO <END>")
+
+
+def separarSets(sets):
+    setsSeparados = []
+    setTemportal = ""
+    for element in sets:
+        if (element[-1] == "."):
+            if (len(setTemportal) == 0):
+                setsSeparados.append(element)
+
+            else:
+                setsSeparados.append(setTemportal + element)
+                setTemportal = ""
+
+        else:
+            setTemportal += element
+    
+    print(setsSeparados)
 
 
 if __name__ == "__main__":
