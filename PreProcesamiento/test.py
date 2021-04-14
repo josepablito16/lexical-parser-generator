@@ -11,6 +11,7 @@ def getTest(texto):
         return str(result)
 
 
+assert getTest('2|5|3') == '((2|5)|3)', "debería crear paréntesis"
 assert getTest('2+5*3') == '(2+(5*3))', "debería crear paréntesis"
 assert getTest('2+2+2+2+2') == '((((2+2)+2)+2)+2)', "debería crear paréntesis"
 assert getTest(

@@ -51,6 +51,7 @@ TT_INT = 'INT'
 TT_FLOAT = 'FLOAT'
 TT_PLUS = 'PLUS'
 TT_MINUS = 'MINUS'
+TT_OR = 'OR'
 TT_MUL = 'MUL'
 TT_DIV = 'DIV'
 TT_LPAREN = 'LPAREN'
@@ -62,7 +63,8 @@ diccionario = {
     'PLUS': '+',
     'MINUS': '-',
     'MUL': '*',
-    'DIV': '/'
+    'DIV': '/',
+    'OR': '|'
 }
 
 
@@ -132,6 +134,9 @@ class Lexer:
                 self.avanzar()
             elif self.charActual == '-':
                 tokens.append(Token(TT_MINUS))
+                self.avanzar()
+            elif self.charActual == '|':
+                tokens.append(Token(TT_OR))
                 self.avanzar()
             elif self.charActual == '*':
                 tokens.append(Token(TT_MUL))
@@ -322,7 +327,7 @@ class Parser:
         '''
         expr : term ((PLUS | MINUS) term)*
         '''
-        return self.bin_op(self.term, (TT_PLUS, TT_MINUS))
+        return self.bin_op(self.term, (TT_PLUS, TT_MINUS, TT_OR))
 
     def bin_op(self, func, ops):
         '''
