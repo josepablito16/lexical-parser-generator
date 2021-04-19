@@ -2,7 +2,8 @@
 # CONSTANTES
 #######################################
 
-DIGITOS = '0123456789'
+DIGITOS = list(map(chr, range(ord('0'), ord('9')+1))) + \
+    ['.'] + list(map(chr, range(ord('a'), ord('z')+1)))
 
 #######################################
 # ERRORS
@@ -168,7 +169,7 @@ class Lexer:
         Mientras no haya llegado al final del texto plano
         y el char actual sea numero o punto
         '''
-        while self.charActual != None and self.charActual in DIGITOS + '.':
+        while self.charActual != None and self.charActual in DIGITOS:
 
             # Cuenta los puntos
             if self.charActual == '.':
