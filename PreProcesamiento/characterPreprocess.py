@@ -26,8 +26,14 @@ class CharacterPreprocess:
         self.dobleComillaAbierta = False
         self.comillaAbierta = False
 
-    def avanzar(self):
+    def avanzarChar(self):
         if self.posActual < len(self.string) - 1:
+            self.posActual += 1
+        else:
+            self.posActual = None
+
+    def avanzarOperaciones(self):
+        if self.posActual < len(self.operaciones) - 1:
             self.posActual += 1
         else:
             self.posActual = None
@@ -38,7 +44,7 @@ class CharacterPreprocess:
 
     def splitString(self):
         while self.posActual != None:
-            self.avanzar()
+            self.avanzarChar()
             if self.posActual == None:
                 break
 
@@ -58,14 +64,12 @@ class CharacterPreprocess:
                 elif self.string[self.posActual] == '-':
                     self.operaciones.append(Token(TT_DIF))
 
-        print(self.operaciones)
-
     def identificador(self):
         tempIdentificador = ""
-        self.avanzar()
+        self.avanzarChar()
         while self.string[self.posActual] in CHAR_IDENTIFICADOR:
             tempIdentificador += self.string[self.posActual]
-            self.avanzar()
+            self.avanzarChar()
             if self.posActual == None:
                 break
 
@@ -76,10 +80,33 @@ class CharacterPreprocess:
 
     def plainString(self):
         tempString = ""
-        self.avanzar()
+        self.avanzarChar()
         while self.string[self.posActual] != '"':
             tempString += self.string[self.posActual]
-            self.avanzar()
+            self.avanzarChar()
 
         # print(tempString)
         self.operaciones.append(Token(TT_CHAR, Character(tempString)))
+
+    def operar(self):
+        self.posActual = -1
+        operacionCola = []
+        while self.posActual != None:
+            self.avanzarOperaciones()
+            if self.posActual == None:
+                break
+
+            if self.operaciones[self.posActual].tipo == TT_CHAR:
+                operacionCola.append(self.operaciones[self.posActual])
+
+            elif self.operaciones[self.posActual].tipo == TT_UNION:
+                self.avanzarOperaciones()
+                char1 = operacionCola.pop().valor
+                char2 = self.operaciones[self.posActual].valor.elementos
+                char1.union(char2)
+
+                operacionCola.append(Token(TT_CHAR, char1))
+
+        resultado = operacionCola.pop().valor
+
+        return resultado

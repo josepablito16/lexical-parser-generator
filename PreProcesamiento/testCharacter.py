@@ -20,10 +20,32 @@ def testDiferencia():
 testUnion()
 testDiferencia()
 
-expresiones = ['"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"+hola',
-               '"0123456789"', 'digit+"ABCDEF"']
+expresiones = {
+    'letter': '"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"',
+    'digit': '"0123456789"',
+    'hexdigit': 'digit + "ABCDEFabcdef"'
+}
 
+for key, item in expresiones.items():
 
+    # se crea un objeto characterProcess
+    preProcess = CharacterPreprocess(item)
+
+    # se crean los tokens
+    preProcess.splitString()
+
+    # se opera para tener solo un set final
+    resultadoFinal = preProcess.operar()
+
+    # Se guarda el resultado en el diccionario
+    expresiones[key] = resultadoFinal
+    break
+
+print(expresiones)
+
+'''
 for i in expresiones:
-    pre1 = CharacterPreprocess(i)
-    pre1.splitString()
+    #pre1 = CharacterPreprocess(i)
+    pre1 = CharacterPreprocess('"abc"+"123"+"def"')
+    break
+'''

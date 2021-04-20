@@ -3,7 +3,7 @@ class Character:
         self.elementos = set(elementos)
 
     def __repr__(self):
-        return f"{self.elementos}"
+        return f"<Character> {self.elementos}"
 
     def union(self, character):
         self.elementos = self.elementos.union(set(character))
