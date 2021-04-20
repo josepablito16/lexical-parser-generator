@@ -1,4 +1,5 @@
 from character import *
+from characterPreprocess import *
 
 
 def testUnion():
@@ -18,3 +19,8 @@ def testDiferencia():
 
 testUnion()
 testDiferencia()
+
+expresiones = ['"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"',
+               '"0123456789"', 'digit+"ABCDEF"']
+pre1 = CharacterPreprocess(expresiones.pop(2))
+pre1.splitString()
