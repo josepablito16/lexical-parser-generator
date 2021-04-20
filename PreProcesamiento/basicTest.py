@@ -23,11 +23,6 @@ assert getTest(
 assert getTest(
     '1+') == 'Invalid Syntax: Expected int or float', "debería crear error de espera num"
 
-print(getTest('1 + d'))
-'''
-assert getTest(
-    '1 + d') == "Illegal Character: 'd'", "debería crear error de que no reconoce d"
-'''
 
 print("TODO BIEN!")
 

@@ -1,47 +1,12 @@
+from error import *
+from tokenObj import *
+
 #######################################
 # CONSTANTES
 #######################################
 
 DIGITOS = list(map(chr, range(ord('0'), ord('9')+1))) + \
     ['.'] + list(map(chr, range(ord('a'), ord('z')+1)))
-
-#######################################
-# ERRORS
-#######################################
-
-
-class Error:
-    '''
-    Clase principal de error,
-    nos sirve para imprimir un error en pantalla
-    '''
-
-    def __init__(self, error_name, details):
-        self.error_name = error_name
-        self.details = details
-
-    def asString(self):
-        return f"{self.error_name}: {self.details}"
-
-
-class IllegalCharError(Error):
-    '''
-    Clase que hereda de la clase Error, especificamente para
-    caracteres que nuestro programa no reconoce
-    '''
-
-    def __init__(self, details):
-        super().__init__('Illegal Character', details)
-
-
-class InvalidSyntaxError(Error):
-    '''
-    Clase que hereda de la clase Error, especificamente para
-    caracteres que nuestro programa no reconoce
-    '''
-
-    def __init__(self, details):
-        super().__init__('Invalid Syntax', details)
 
 
 #######################################
@@ -67,21 +32,6 @@ diccionario = {
     'DIV': '/',
     'OR': '|'
 }
-
-
-class Token:
-    '''
-    Objeto que guarda el tipo y valor de cada token
-    '''
-
-    def __init__(self, tipo, valor=None):
-        self.tipo = tipo
-        self.valor = valor
-
-    def __repr__(self):
-        if self.valor:
-            return f'{self.tipo}:{self.valor}'
-        return f'{self.tipo}'
 
 
 #######################################

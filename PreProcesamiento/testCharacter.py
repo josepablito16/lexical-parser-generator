@@ -20,7 +20,10 @@ def testDiferencia():
 testUnion()
 testDiferencia()
 
-expresiones = ['"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"',
+expresiones = ['"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"+hola',
                '"0123456789"', 'digit+"ABCDEF"']
-pre1 = CharacterPreprocess(expresiones.pop(2))
-pre1.splitString()
+
+
+for i in expresiones:
+    pre1 = CharacterPreprocess(i)
+    pre1.splitString()
