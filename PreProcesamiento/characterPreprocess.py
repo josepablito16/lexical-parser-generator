@@ -1,3 +1,5 @@
+from tokenObj import *
+from character import *
 import string
 
 # CONSTANTES
@@ -5,6 +7,15 @@ CHAR_IDENTIFICADOR = string.ascii_lowercase + \
     string.ascii_uppercase + "_" + "1234567890"
 
 CHAR_OPERADOR = "-+"
+
+#######################################
+# TOKENS
+#######################################
+# Constantes tokens tipos
+TT_UNION = 'UNION'
+TT_DIF = 'DIF'
+TT_ID = 'ID'
+TT_CHAR = 'CHAR'
 
 
 class CharacterPreprocess:
@@ -42,7 +53,10 @@ class CharacterPreprocess:
 
             # identificar operador
             elif self.string[self.posActual] in CHAR_OPERADOR:
-                self.operaciones.append(self.string[self.posActual])
+                if self.string[self.posActual] == '+':
+                    self.operaciones.append(Token(TT_UNION))
+                elif self.string[self.posActual] == '-':
+                    self.operaciones.append(Token(TT_DIF))
 
         print(self.operaciones)
 
@@ -58,7 +72,7 @@ class CharacterPreprocess:
         self.retroceder()
 
         # print(tempIdentificador)
-        self.operaciones.append(tempIdentificador)
+        self.operaciones.append(Token(TT_ID, tempIdentificador))
 
     def plainString(self):
         tempString = ""
@@ -68,4 +82,4 @@ class CharacterPreprocess:
             self.avanzar()
 
         # print(tempString)
-        self.operaciones.append(tempString)
+        self.operaciones.append(Token(TT_CHAR, Character(tempString)))
