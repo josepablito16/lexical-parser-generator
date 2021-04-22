@@ -109,6 +109,16 @@ class CharacterPreprocess:
 
                 operacionCola.append(Token(TT_CHAR, char1))
 
+            # operacion de diferencia
+            elif self.operaciones[self.posActual].tipo == TT_DIF:
+                self.avanzarOperaciones()
+                char1 = operacionCola.pop().valor
+                char2 = self.operaciones[self.posActual].valor.elementos
+                char1.diferencia(char2)
+                #print(f'{char1} \n {char2}')
+
+                operacionCola.append(Token(TT_CHAR, char1))
+
             # solo es un identificador
             elif self.operaciones[self.posActual].tipo == TT_ID:
                 print(f'es id {self.operaciones[self.posActual]}')
