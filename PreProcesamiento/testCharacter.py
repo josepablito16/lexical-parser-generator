@@ -23,8 +23,11 @@ testDiferencia()
 expresiones = {
     'letter': '"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"',
     'digit': '"0123456789"',
-    'hexdigit': 'digit + "ABCDEFabcdef"'
+    'hexdigit': 'digit + "ABCDEFabcdef"',
+    'prueba': 'letter - "ABCDEFabcdef"',
 }
+
+expresionesTratadas = {}
 
 for key, item in expresiones.items():
 
@@ -35,13 +38,13 @@ for key, item in expresiones.items():
     preProcess.splitString()
 
     # se opera para tener solo un set final
-    resultadoFinal = preProcess.operar()
+    resultadoFinal = preProcess.operar(expresionesTratadas)
 
     # Se guarda el resultado en el diccionario
-    expresiones[key] = resultadoFinal
-    break
+    expresionesTratadas[key] = resultadoFinal
 
-print(expresiones)
+
+print(expresionesTratadas)
 
 '''
 for i in expresiones:

@@ -88,7 +88,7 @@ class CharacterPreprocess:
         # print(tempString)
         self.operaciones.append(Token(TT_CHAR, Character(tempString)))
 
-    def operar(self):
+    def operar(self, expresionesTratadas):
         self.posActual = -1
         operacionCola = []
         while self.posActual != None:
@@ -96,9 +96,11 @@ class CharacterPreprocess:
             if self.posActual == None:
                 break
 
+            # solo es char
             if self.operaciones[self.posActual].tipo == TT_CHAR:
                 operacionCola.append(self.operaciones[self.posActual])
 
+            # operacion de union
             elif self.operaciones[self.posActual].tipo == TT_UNION:
                 self.avanzarOperaciones()
                 char1 = operacionCola.pop().valor
@@ -106,6 +108,16 @@ class CharacterPreprocess:
                 char1.union(char2)
 
                 operacionCola.append(Token(TT_CHAR, char1))
+
+            # solo es un identificador
+            elif self.operaciones[self.posActual].tipo == TT_ID:
+                print(f'es id {self.operaciones[self.posActual]}')
+                if self.operaciones[self.posActual].valor in expresionesTratadas:
+                    valorId = expresionesTratadas[self.operaciones[self.posActual].valor]
+
+                    operacionCola.append(Token(TT_CHAR, valorId))
+                else:
+                    print('error')
 
         resultado = operacionCola.pop().valor
 
