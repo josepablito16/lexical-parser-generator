@@ -1,5 +1,6 @@
 from tokenObj import *
 from character import *
+from error import IllegalCharError, InvalidSyntaxError
 import string
 
 # CONSTANTES
@@ -91,6 +92,8 @@ class CharacterPreprocess:
     def operar(self, expresionesTratadas):
         self.posActual = -1
         operacionCola = []
+        errores = []
+        hayError = False
         while self.posActual != None:
             self.avanzarOperaciones()
             if self.posActual == None:
@@ -104,7 +107,19 @@ class CharacterPreprocess:
             elif self.operaciones[self.posActual].tipo == TT_UNION:
                 self.avanzarOperaciones()
                 char1 = operacionCola.pop().valor
-                char2 = self.operaciones[self.posActual].valor.elementos
+                if (self.posActual == None):
+                    errores.append(InvalidSyntaxError(
+                        "Se esperaba set o identificador"))
+                    hayError = True
+                    break
+
+                try:
+                    char2 = self.operaciones[self.posActual].valor.elementos
+                except:
+                    errores.append(InvalidSyntaxError(
+                        "Se esperaba set o identificador"))
+                    hayError = True
+                    break
                 char1.union(char2)
 
                 operacionCola.append(Token(TT_CHAR, char1))
@@ -113,7 +128,18 @@ class CharacterPreprocess:
             elif self.operaciones[self.posActual].tipo == TT_DIF:
                 self.avanzarOperaciones()
                 char1 = operacionCola.pop().valor
-                char2 = self.operaciones[self.posActual].valor.elementos
+                if (self.posActual == None):
+                    errores.append(InvalidSyntaxError(
+                        "Se esperaba set o identificador"))
+                    hayError = True
+                    break
+                try:
+                    char2 = self.operaciones[self.posActual].valor.elementos
+                except:
+                    errores.append(InvalidSyntaxError(
+                        "Se esperaba set o identificador"))
+                    hayError = True
+                    break
                 char1.diferencia(char2)
                 #print(f'{char1} \n {char2}')
 
@@ -121,14 +147,20 @@ class CharacterPreprocess:
 
             # solo es un identificador
             elif self.operaciones[self.posActual].tipo == TT_ID:
-                print(f'es id {self.operaciones[self.posActual]}')
                 if self.operaciones[self.posActual].valor in expresionesTratadas:
                     valorId = expresionesTratadas[self.operaciones[self.posActual].valor]
 
                     operacionCola.append(Token(TT_CHAR, valorId))
                 else:
                     print('error')
+                    hayError = True
+                    errores.append(IllegalCharError(
+                        f'Este identificador es usado antes de ser declarado: {self.operaciones[self.posActual].valor}'))
+                    break
 
-        resultado = operacionCola.pop().valor
+        if hayError:
+            resultado = []
+        else:
+            resultado = operacionCola.pop().valor
 
-        return resultado
+        return resultado, errores

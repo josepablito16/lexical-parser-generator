@@ -17,6 +17,9 @@ class Error:
     def asString(self):
         return f"{self.error_name}: {self.details}"
 
+    def __repr__(self):
+        return f"{self.error_name}: {self.details}"
+
 
 class IllegalCharError(Error):
     '''

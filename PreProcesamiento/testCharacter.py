@@ -25,6 +25,8 @@ expresiones = {
     'digit': '"0123456789"',
     'hexdigit': 'digit + "ABCDEFabcdef"',
     'prueba': 'letter - "ABCDEFabcdef"',
+    'prueba2': 'letter2 - "ABCDEFabcdef"',
+    'prueba3': '"ABCDEFabcdef" ++',
 }
 
 expresionesTratadas = {}
@@ -38,7 +40,11 @@ for key, item in expresiones.items():
     preProcess.splitString()
 
     # se opera para tener solo un set final
-    resultadoFinal = preProcess.operar(expresionesTratadas)
+    resultadoFinal, errores = preProcess.operar(expresionesTratadas)
+
+    if len(errores) > 0:
+        for error in errores:
+            print(error)
 
     # Se guarda el resultado en el diccionario
     expresionesTratadas[key] = resultadoFinal
