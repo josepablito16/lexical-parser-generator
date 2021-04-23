@@ -12,6 +12,9 @@ def getTest(texto):
 
 
 assert getTest('2|5|3') == '((2|5)|3)', "debería crear paréntesis"
+assert getTest('(2|5)6') == '((2|5).6)', "debería crear concatenacion"
+print()
+'''
 assert getTest('2+5*3') == '(2+(5*3))', "debería crear paréntesis"
 assert getTest('2+2+2+2+2') == '((((2+2)+2)+2)+2)', "debería crear paréntesis"
 assert getTest(
@@ -23,6 +26,7 @@ assert getTest(
 assert getTest(
     '1+') == 'Invalid Syntax: Expected int or float', "debería crear error de espera num"
 
+'''
 
 print("TODO BIEN!")
 

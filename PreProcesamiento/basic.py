@@ -20,6 +20,7 @@ TT_MINUS = 'MINUS'
 TT_OR = 'OR'
 TT_MUL = 'MUL'
 TT_DIV = 'DIV'
+TT_CONCAT = 'CONCAT'
 TT_LPAREN = 'LPAREN'
 TT_RPAREN = 'RPAREN'
 TT_EOF = 'EOF'
@@ -30,7 +31,8 @@ diccionario = {
     'MINUS': '-',
     'MUL': '*',
     'DIV': '/',
-    'OR': '|'
+    'OR': '|',
+    'CONCAT': '.'
 }
 
 
@@ -234,9 +236,22 @@ class Parser:
             self.tokenActual = self.tokens[self.tokenId]
         return self.tokenActual
 
+    def explorar(self):
+        '''
+        Pasamo a la siguiente posicion si no hemos
+        llegado al final
+        '''
+        if self.tokenId < len(self.tokens):
+            return self.tokens[self.tokenId]
+        return None
+
     def parse(self):
         res = self.expr()
         if not res.error and self.tokenActual.tipo != TT_EOF:
+            if (isinstance(res.nodo, NodoBinario) and self.explorar().tipo == TT_INT):
+                res.success(NodoBinario(
+                    res.nodo, Token(TT_CONCAT), NodoNumero(self.explorar())))
+                return res
             return res.failure(InvalidSyntaxError("Expected '+', '-', '*' or '/'"))
         return res
 
@@ -313,6 +328,7 @@ def run(textoPlano):
     '''
     lexer = Lexer(textoPlano)
     tokens, error = lexer.crearTokens()
+    print(tokens)
     if error:
         return None, error
 
