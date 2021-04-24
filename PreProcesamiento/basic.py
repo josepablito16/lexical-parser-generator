@@ -65,6 +65,16 @@ class Lexer:
         else:
             self.charActual = None
 
+    def explorar(self):
+        '''
+        retorna el siguiente token si no ha llegado al final
+        '''
+
+        if self.pos + 1 < len(self.textoPlano):
+            return self.textoPlano[self.pos + 1]
+        else:
+            return None
+
     def crearTokens(self):
         '''
         Crea una lista de tokens
@@ -73,7 +83,13 @@ class Lexer:
 
         # Mientras no haya llegado al final
         while self.charActual != None:
-            if isinstance(self.charActual, Character):
+            if (isinstance(self.charActual, Character) and isinstance(self.explorar(), Character)):
+                tokens.append(Token(TT_INT, self.charActual))
+                tokens.append(Token(TT_CONCAT))
+                tokens.append(Token(TT_INT, self.explorar()))
+                self.avanzar()
+                self.avanzar()
+            elif isinstance(self.charActual, Character):
                 tokens.append(Token(TT_INT, self.charActual))
                 self.avanzar()
             # si es un espacio o tab solo avanza
@@ -170,8 +186,8 @@ class NodoBinario:
         self.nodoIzquierdo = nodoIzquierdo
         self.tokenOperacion = tokenOperacion
         self.nodoDerecho = nodoDerecho
-        self.listaTokens = ['(', self.nodoIzquierdo,
-                            self.tokenOperacion, self.nodoDerecho, ')']
+        self.listaTokens = [Token(TT_LPAREN), self.nodoIzquierdo,
+                            self.tokenOperacion, self.nodoDerecho, Token(TT_RPAREN)]
 
     def __repr__(self):
         return f"({self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho})"
@@ -244,8 +260,7 @@ class Parser:
 
     def explorar(self):
         '''
-        Pasamo a la siguiente posicion si no hemos
-        llegado al final
+        retorna el siguiente token si no ha llegado al final
         '''
         if self.tokenId < len(self.tokens):
             return self.tokens[self.tokenId]
@@ -258,6 +273,7 @@ class Parser:
                 res.success(NodoBinario(
                     res.nodo, Token(TT_CONCAT), NodoNumero(self.explorar())))
                 return res
+
             return res.failure(InvalidSyntaxError("Expected '+', '-', '*' or '/'"))
         return res
 
@@ -293,7 +309,7 @@ class Parser:
         '''
         term : factor ((MUL | DIV) factor)*
         '''
-        return self.bin_op(self.factor, (TT_MUL, TT_DIV))
+        return self.bin_op(self.factor, (TT_MUL, TT_DIV, TT_CONCAT))
 
     def expr(self):
         '''
@@ -348,11 +364,14 @@ def getListNodes(root):
         self.nodoDerecho = nodoDerecho
     '''
     listaNodos = []
-    for i in root.listaTokens:
-        if(isinstance(i, NodoBinario)):
-            listaNodos += getSubListaNodes(i)
-        else:
-            listaNodos.append(i)
+    if isinstance(root, NodoBinario):
+        for i in root.listaTokens:
+            if(isinstance(i, NodoBinario)):
+                listaNodos += getSubListaNodes(i)
+            else:
+                listaNodos.append(i)
+    else:
+        print(root)
 
     print(listaNodos)
 
@@ -364,7 +383,7 @@ def run(textoPlano):
 
     lexer = Lexer(textoPlano)
     tokens, error = lexer.crearTokens()
-    print(tokens)
+    print(f'\nTOKENS \n {tokens}\n')
     if error:
         return None, error
 
