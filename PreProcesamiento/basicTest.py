@@ -12,11 +12,10 @@ def getTest(texto):
         return str(result)
 
 
-'''
-assert getTest(['2', '|', '5', '|', '3']
-               ) == '((2|5)|3)', "debería crear paréntesis"
-'''
-print(getTest([Character('a'), '|', Character('b'), '|', Character('c')]))
+assert getTest([Character('a'), '|', Character('b'), '|', Character(
+    'c')]) == "(({'a'}|{'b'})|{'c'})", "debería crear paréntesis"
+
+print()
 
 #assert getTest('(2|5)6') == '((2|5).6)', "debería crear concatenacion"
 '''

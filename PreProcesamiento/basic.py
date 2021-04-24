@@ -74,7 +74,6 @@ class Lexer:
         # Mientras no haya llegado al final
         while self.charActual != None:
             if isinstance(self.charActual, Character):
-                print("ENtra")
                 tokens.append(Token(TT_INT, self.charActual))
                 self.avanzar()
             # si es un espacio o tab solo avanza
@@ -171,6 +170,8 @@ class NodoBinario:
         self.nodoIzquierdo = nodoIzquierdo
         self.tokenOperacion = tokenOperacion
         self.nodoDerecho = nodoDerecho
+        self.listaTokens = ['(', self.nodoIzquierdo,
+                            self.tokenOperacion, self.nodoDerecho, ')']
 
     def __repr__(self):
         return f"({self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho})"
@@ -327,6 +328,35 @@ class Parser:
 #######################################
 
 
+def getSubListaNodes(root):
+    listaSubNodos = []
+
+    if(isinstance(root, NodoBinario)):
+        for j in root.listaTokens:
+            if(isinstance(j, NodoBinario)):
+                listaSubNodos += getSubListaNodes(j)
+            else:
+                listaSubNodos.append(j)
+
+    return listaSubNodos
+
+
+def getListNodes(root):
+    '''
+    self.nodoIzquierdo = nodoIzquierdo
+        self.tokenOperacion = tokenOperacion
+        self.nodoDerecho = nodoDerecho
+    '''
+    listaNodos = []
+    for i in root.listaTokens:
+        if(isinstance(i, NodoBinario)):
+            listaNodos += getSubListaNodes(i)
+        else:
+            listaNodos.append(i)
+
+    print(listaNodos)
+
+
 def run(textoPlano):
     '''
     Metodo principal que llama al lexer y al parser
@@ -340,5 +370,7 @@ def run(textoPlano):
 
     parser = Parser(tokens)
     ast = parser.parse()
+
+    getListNodes(ast.nodo)
 
     return ast.nodo, ast.error
