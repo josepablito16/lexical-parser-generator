@@ -1,5 +1,6 @@
 from error import *
 from tokenObj import *
+from character import Character
 
 #######################################
 # CONSTANTES
@@ -72,8 +73,12 @@ class Lexer:
 
         # Mientras no haya llegado al final
         while self.charActual != None:
+            if isinstance(self.charActual, Character):
+                print("ENtra")
+                tokens.append(Token(TT_INT, self.charActual))
+                self.avanzar()
             # si es un espacio o tab solo avanza
-            if self.charActual in ' \t':
+            elif self.charActual in ' \t':
                 self.avanzar()
 
                 '''
@@ -326,6 +331,7 @@ def run(textoPlano):
     '''
     Metodo principal que llama al lexer y al parser
     '''
+
     lexer = Lexer(textoPlano)
     tokens, error = lexer.crearTokens()
     print(tokens)

@@ -1,4 +1,5 @@
 import basic
+from character import *
 #test = ['2+5*3', '2+2+2+2+2', '(1+2)/(1+2)', '123 123 123 +', '1+', '1 + d']
 
 
@@ -11,9 +12,13 @@ def getTest(texto):
         return str(result)
 
 
-assert getTest('2|5|3') == '((2|5)|3)', "debería crear paréntesis"
-assert getTest('(2|5)6') == '((2|5).6)', "debería crear concatenacion"
-print()
+'''
+assert getTest(['2', '|', '5', '|', '3']
+               ) == '((2|5)|3)', "debería crear paréntesis"
+'''
+print(getTest([Character('a'), '|', Character('b'), '|', Character('c')]))
+
+#assert getTest('(2|5)6') == '((2|5).6)', "debería crear concatenacion"
 '''
 assert getTest('2+5*3') == '(2+(5*3))', "debería crear paréntesis"
 assert getTest('2+2+2+2+2') == '((((2+2)+2)+2)+2)', "debería crear paréntesis"
