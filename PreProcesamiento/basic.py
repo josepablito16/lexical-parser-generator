@@ -24,6 +24,8 @@ TT_DIV = 'DIV'
 TT_CONCAT = 'CONCAT'
 TT_LPAREN = 'LPAREN'
 TT_RPAREN = 'RPAREN'
+TT_LBRACKET = 'LBRACKET'
+TT_RBRACKET = 'RBRACKET'
 TT_EOF = 'EOF'
 
 # equivalente de cada token pero en simbolos
@@ -97,9 +99,9 @@ class Lexer:
                 self.avanzar()
 
                 '''
-                sino intenta reconocer el token y lo
-                agrega a la lista tokens
-                '''
+				sino intenta reconocer el token y lo
+				agrega a la lista tokens
+				'''
             elif self.charActual in DIGITOS:
                 tokens.append(self.crearNumero())
             elif self.charActual == '+':
@@ -123,6 +125,12 @@ class Lexer:
             elif self.charActual == ')':
                 tokens.append(Token(TT_RPAREN))
                 self.avanzar()
+            elif self.charActual == '[':
+                tokens.append(Token(TT_LBRACKET))
+                self.avanzar()
+            elif self.charActual == ']':
+                tokens.append(Token(TT_RBRACKET))
+                self.avanzar()
             else:
                 # Retorna error si no reconoce el caracter
                 char = self.charActual
@@ -138,9 +146,9 @@ class Lexer:
         contadorPuntos = 0
 
         '''
-        Mientras no haya llegado al final del texto plano
-        y el char actual sea numero o punto
-        '''
+		Mientras no haya llegado al final del texto plano
+		y el char actual sea numero o punto
+		'''
         while self.charActual != None and self.charActual in DIGITOS:
 
             # Cuenta los puntos
@@ -182,20 +190,46 @@ class NodoBinario:
     Nodo que contiene <nodo izquierdo> <operador> <nodo derecho>
     '''
 
-    def __init__(self, nodoIzquierdo, tokenOperacion, nodoDerecho):
+    def __init__(self, nodoIzquierdo, tokenOperacion, nodoDerecho, agrupacion=None):
         self.nodoIzquierdo = nodoIzquierdo
         self.tokenOperacion = tokenOperacion
         self.nodoDerecho = nodoDerecho
-        self.listaTokens = [Token(TT_LPAREN), self.nodoIzquierdo,
-                            self.tokenOperacion, self.nodoDerecho, Token(TT_RPAREN)]
+        self.agrupacion = agrupacion
+        self.listaTokens = []
+        self.crearAgrupacion()
+
+    def crearAgrupacion(self):
+        try:
+            tipo = self.agrupacion.tipo
+        except:
+            tipo = None
+
+        if (tipo in [TT_LPAREN, None]):
+            self.listaTokens = [Token(
+                TT_LPAREN), self.nodoIzquierdo, self.tokenOperacion, self.nodoDerecho, Token(TT_RPAREN)]
+
+        elif (tipo == TT_LBRACKET):
+            self.listaTokens = [Token(TT_LBRACKET), self.nodoIzquierdo,
+                                self.tokenOperacion, self.nodoDerecho, Token(TT_RBRACKET)]
 
     def __repr__(self):
-        return f"({self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho})"
+        # {chr(91)}
+        try:
+            tipo = self.agrupacion.tipo
+        except:
+            tipo = None
+
+        if (tipo in [TT_LPAREN, None]):
+            return f"({self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho})"
+
+        elif (tipo == TT_LBRACKET):
+            return f"[{self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho}]"
 
 
 #######################################
 # PARSER DE RESULTADOS
 #######################################
+
 
 class ParseResultados:
     '''
@@ -246,6 +280,7 @@ class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
         self.tokenId = -1
+        self.tokenGrupo = None
         self.avanzar()
 
     def avanzar(self):
@@ -273,6 +308,8 @@ class Parser:
                 res.success(NodoBinario(
                     res.nodo, Token(TT_CONCAT), NodoNumero(self.explorar())))
                 return res
+            print(f'AQUII {res.nodo}')
+            print(f'AQUII2 {self.tokenActual}')
 
             return res.failure(InvalidSyntaxError("Expected '+', '-', '*' or '/'"))
         return res
@@ -288,12 +325,13 @@ class Parser:
             res.registrar(self.avanzar())
             return res.success(NodoNumero(token))
 
-        elif token.tipo == TT_LPAREN:
+        elif token.tipo in [TT_LPAREN, TT_LBRACKET]:
+            self.tokenGrupo = token
             res.registrar(self.avanzar())
             expr = res.registrar(self.expr())
             if res.error:
                 return res
-            if self.tokenActual.tipo == TT_RPAREN:
+            if self.tokenActual.tipo in [TT_RPAREN, TT_RBRACKET]:
                 res.registrar(self.avanzar())
                 return res.success(expr)
             else:
@@ -321,7 +359,7 @@ class Parser:
         '''
         Codigo de term y expr
         Como se parecen tanto, se deja dinamico la funcion
-        y los operadores que tienen que interpretar 
+        y los operadores que tienen que interpretar
         '''
         res = ParseResultados()
         left = res.registrar(func())
@@ -335,7 +373,11 @@ class Parser:
             right = res.registrar(func())
             if res.error:
                 return res
-            left = NodoBinario(left, tokenOperacion, right)
+            print(f"""
+			NODO BINARIO con {self.tokenGrupo}
+			LEFT {left}
+			RIGHT {right}""")
+            left = NodoBinario(left, tokenOperacion, right, self.tokenGrupo)
 
         return res.success(left)
 
@@ -360,8 +402,8 @@ def getSubListaNodes(root):
 def getListNodes(root):
     '''
     self.nodoIzquierdo = nodoIzquierdo
-        self.tokenOperacion = tokenOperacion
-        self.nodoDerecho = nodoDerecho
+                                                                                                                                    self.tokenOperacion = tokenOperacion
+                                                                                                                                    self.nodoDerecho = nodoDerecho
     '''
     listaNodos = []
     if isinstance(root, NodoBinario):
@@ -383,7 +425,7 @@ def run(textoPlano):
 
     lexer = Lexer(textoPlano)
     tokens, error = lexer.crearTokens()
-    print(f'\nTOKENS \n {tokens}\n')
+    # print(f'\nTOKENS \n {tokens}\n')
     if error:
         return None, error
 

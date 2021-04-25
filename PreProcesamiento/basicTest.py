@@ -22,7 +22,8 @@ assert getTest(['(', Character('a'), '|', Character('b'), ')', Character(
 # caso de concatencion 3
 assert getTest([Character('a'), Character('b'), '|', Character('c'), '|', Character('d'), Character(
     'e')]) == "((({'a'}.{'b'})|{'c'})|({'d'}.{'e'}))", "debería crear concatenacion y parentesis"
-print()
+
+print(getTest(['[', Character('a'), '|', Character('d'), ']', Character('c')]))
 
 '''
 assert getTest('2+5*3') == '(2+(5*3))', "debería crear paréntesis"
