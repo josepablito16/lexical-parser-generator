@@ -26,6 +26,8 @@ TT_LPAREN = 'LPAREN'
 TT_RPAREN = 'RPAREN'
 TT_LBRACKET = 'LBRACKET'
 TT_RBRACKET = 'RBRACKET'
+TT_LBRACES = 'LBRACES'
+TT_RBRACES = 'RBRACES'
 TT_EOF = 'EOF'
 
 # equivalente de cada token pero en simbolos
@@ -131,6 +133,12 @@ class Lexer:
             elif self.charActual == ']':
                 tokens.append(Token(TT_RBRACKET))
                 self.avanzar()
+            elif self.charActual == '{':
+                tokens.append(Token(TT_LBRACES))
+                self.avanzar()
+            elif self.charActual == '}':
+                tokens.append(Token(TT_RBRACES))
+                self.avanzar()
             else:
                 # Retorna error si no reconoce el caracter
                 char = self.charActual
@@ -212,8 +220,11 @@ class NodoBinario:
             self.listaTokens = [Token(TT_LBRACKET), self.nodoIzquierdo,
                                 self.tokenOperacion, self.nodoDerecho, Token(TT_RBRACKET)]
 
+        elif (tipo == TT_LBRACES):
+            self.listaTokens = [Token(TT_LBRACES), self.nodoIzquierdo,
+                                self.tokenOperacion, self.nodoDerecho, Token(TT_RBRACES)]
+
     def __repr__(self):
-        # {chr(91)}
         try:
             tipo = self.agrupacion.tipo
         except:
@@ -224,6 +235,9 @@ class NodoBinario:
 
         elif (tipo == TT_LBRACKET):
             return f"[{self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho}]"
+
+        elif (tipo == TT_LBRACES):
+            return f"{chr(123)}{self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho}{chr(125)}"
 
 
 #######################################
@@ -325,13 +339,13 @@ class Parser:
             res.registrar(self.avanzar())
             return res.success(NodoNumero(token))
 
-        elif token.tipo in [TT_LPAREN, TT_LBRACKET]:
+        elif token.tipo in [TT_LPAREN, TT_LBRACKET, TT_LBRACES]:
             self.tokenGrupo = token
             res.registrar(self.avanzar())
             expr = res.registrar(self.expr())
             if res.error:
                 return res
-            if self.tokenActual.tipo in [TT_RPAREN, TT_RBRACKET]:
+            if self.tokenActual.tipo in [TT_RPAREN, TT_RBRACKET, TT_RBRACES]:
                 res.registrar(self.avanzar())
                 return res.success(expr)
             else:

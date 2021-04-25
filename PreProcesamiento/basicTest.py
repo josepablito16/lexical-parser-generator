@@ -23,7 +23,14 @@ assert getTest(['(', Character('a'), '|', Character('b'), ')', Character(
 assert getTest([Character('a'), Character('b'), '|', Character('c'), '|', Character('d'), Character(
     'e')]) == "((({'a'}.{'b'})|{'c'})|({'d'}.{'e'}))", "debería crear concatenacion y parentesis"
 
-print(getTest(['[', Character('a'), '|', Character('d'), ']', Character('c')]))
+# CASO BRACKETS
+assert getTest(['[', Character('a'), '|', Character('d'), ']', Character(
+    'c')]) == "([{'a'}|{'d'}].{'c'})", "debería crear concatenacion y brackets"
+
+# CASO BRACES
+assert getTest(['{', Character('a'), '|', Character('d'), '}', Character(
+    'c')]) == "({{'a'}|{'d'}}.{'c'})", "debería crear concatenacion y braces"
+print()
 
 '''
 assert getTest('2+5*3') == '(2+(5*3))', "debería crear paréntesis"
