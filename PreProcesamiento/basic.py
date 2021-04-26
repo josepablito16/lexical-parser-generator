@@ -240,6 +240,50 @@ class NodoBinario:
             return f"{chr(123)}{self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho}{chr(125)}"
 
 
+class NodoUnitario:
+    '''
+    Nodo que contiene <nodo izquierdo> <operador> <nodo derecho>
+    '''
+
+    def __init__(self, nodo, agrupacion=None):
+        self.nodo = nodo
+        self.agrupacion = agrupacion
+        self.listaTokens = []
+        self.crearAgrupacion()
+
+    def crearAgrupacion(self):
+        try:
+            tipo = self.agrupacion.tipo
+        except:
+            tipo = None
+
+        if (tipo in [TT_LPAREN, None]):
+            self.listaTokens = [
+                Token(TT_LPAREN), self.nodo, Token(TT_RPAREN)]
+
+        elif (tipo == TT_LBRACKET):
+            self.listaTokens = [
+                Token(TT_LBRACKET), self.nodo, Token(TT_RBRACKET)]
+
+        elif (tipo == TT_LBRACES):
+            self.listaTokens = [
+                Token(TT_LBRACES), self.nodo, Token(TT_RBRACES)]
+
+    def __repr__(self):
+        try:
+            tipo = self.agrupacion.tipo
+        except:
+            tipo = None
+
+        if (tipo in [TT_LPAREN, None]):
+            return f"({self.nodo.valor})"
+
+        elif (tipo == TT_LBRACKET):
+            return f"[{self.nodo.valor}]"
+
+        elif (tipo == TT_LBRACES):
+            return f"{chr(123)}{self.nodo.valor}{chr(125)}"
+
 #######################################
 # PARSER DE RESULTADOS
 #######################################
@@ -315,15 +359,53 @@ class Parser:
             return self.tokens[self.tokenId]
         return None
 
+    def evaluarAgrupacionIndividual(self):
+        '''
+        Ej:
+        [a]b
+        {a}b
+        '''
+        cond1 = self.tokens[self.tokenId - 3].tipo in [TT_LBRACKET, TT_LBRACES]
+        cond2 = self.tokens[self.tokenId - 2].tipo == TT_INT
+        cond3 = self.tokens[self.tokenId - 1].tipo in [TT_RBRACKET, TT_RBRACES]
+
+        return cond1 and cond2 and cond3
+
+    def construirAgrupacionIndividual(self, res):
+        token1 = self.tokens[self.tokenId - 3]
+        token2 = self.tokens[self.tokenId - 2]
+        token3 = self.tokens[self.tokenId - 1]
+        res.success(NodoUnitario(token2, token1))
+
+        return res
+
     def parse(self):
         res = self.expr()
         if not res.error and self.tokenActual.tipo != TT_EOF:
+            '''
+            Caso concatenar Nodo binario con char
+            Ej:
+            (a|b)c
+            '''
             if (isinstance(res.nodo, NodoBinario) and self.explorar().tipo == TT_INT):
                 res.success(NodoBinario(
                     res.nodo, Token(TT_CONCAT), NodoNumero(self.explorar())))
                 return res
-            print(f'AQUII {res.nodo}')
-            print(f'AQUII2 {self.tokenActual}')
+
+            '''
+            Caso agrupaciona de un solo elemento
+            Ej:
+            [a]b
+            {a}b
+            '''
+            if(self.evaluarAgrupacionIndividual()):
+                print(f'AQUII {self.tokenActual.tipo == TT_INT}')
+                res = self.construirAgrupacionIndividual(res)
+
+                if (self.tokenActual.tipo == TT_INT):
+                    res.success(NodoBinario(
+                        res.nodo, Token(TT_CONCAT), self.tokenActual))
+                return res
 
             return res.failure(InvalidSyntaxError("Expected '+', '-', '*' or '/'"))
         return res
@@ -387,10 +469,7 @@ class Parser:
             right = res.registrar(func())
             if res.error:
                 return res
-            print(f"""
-			NODO BINARIO con {self.tokenGrupo}
-			LEFT {left}
-			RIGHT {right}""")
+
             left = NodoBinario(left, tokenOperacion, right, self.tokenGrupo)
 
         return res.success(left)
@@ -403,9 +482,9 @@ class Parser:
 def getSubListaNodes(root):
     listaSubNodos = []
 
-    if(isinstance(root, NodoBinario)):
+    if(isinstance(root, NodoBinario) or isinstance(root, NodoUnitario)):
         for j in root.listaTokens:
-            if(isinstance(j, NodoBinario)):
+            if(isinstance(j, NodoBinario) or isinstance(j, NodoUnitario)):
                 listaSubNodos += getSubListaNodes(j)
             else:
                 listaSubNodos.append(j)
@@ -422,13 +501,14 @@ def getListNodes(root):
     listaNodos = []
     if isinstance(root, NodoBinario):
         for i in root.listaTokens:
-            if(isinstance(i, NodoBinario)):
+            if(isinstance(i, NodoBinario) or isinstance(i, NodoUnitario)):
                 listaNodos += getSubListaNodes(i)
             else:
                 listaNodos.append(i)
     else:
         print(root)
 
+    # esto se tiene que retornar
     print(listaNodos)
 
 
