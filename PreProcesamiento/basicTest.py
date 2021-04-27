@@ -25,15 +25,20 @@ assert getTest([Character('a'), Character('b'), '|', Character('c'), '|', Charac
 
 # CASO BRACKETS
 assert getTest(['[', Character('a'), '|', Character('d'), ']', Character(
-    'c')]) == "([{'a'}|{'d'}].{'c'})", "debería crear concatenacion y brackets"
+    'c')]) == "((({'a'}|{'d'})|E).{'c'})", "debería crear concatenacion y brackets"
 
 # CASO BRACKETS unitario
 assert getTest(['[', Character('a'), ']', Character(
-    'c')]) == "([{'a'}].INT:{'c'})", "debería crear concatenacion y brackets"
+    'c')]) == "(({'a'}|E).INT:{'c'})", "debería crear concatenacion y brackets"
 
 # CASO BRACES
 assert getTest(['{', Character('a'), '|', Character('d'), '}', Character(
-    'c')]) == "({{'a'}|{'d'}}.{'c'})", "debería crear concatenacion y braces"
+    'c')]) == "((({'a'}|{'d'})*A).{'c'})", "debería crear concatenacion y braces"
+
+
+# CASO BRACES unitario
+assert getTest(['{', Character('a'), '}', Character(
+    'c')]) == "(({'a'}*A).INT:{'c'})", "debería crear concatenacion y braces"
 
 print()
 

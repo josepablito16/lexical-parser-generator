@@ -28,6 +28,8 @@ TT_LBRACKET = 'LBRACKET'
 TT_RBRACKET = 'RBRACKET'
 TT_LBRACES = 'LBRACES'
 TT_RBRACES = 'RBRACES'
+TT_EPSILON = 'EPSILON'
+TT_ALFA = 'ALFA'
 TT_EOF = 'EOF'
 
 # equivalente de cada token pero en simbolos
@@ -217,12 +219,24 @@ class NodoBinario:
                 TT_LPAREN), self.nodoIzquierdo, self.tokenOperacion, self.nodoDerecho, Token(TT_RPAREN)]
 
         elif (tipo == TT_LBRACKET):
+            # OPCION
+            '''
             self.listaTokens = [Token(TT_LBRACKET), self.nodoIzquierdo,
                                 self.tokenOperacion, self.nodoDerecho, Token(TT_RBRACKET)]
+            '''
+            print('ENTRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+            self.listaTokens = [Token(TT_LPAREN), Token(TT_LPAREN), self.nodoIzquierdo, self.tokenOperacion, self.nodoDerecho, Token(
+                TT_RPAREN), Token(TT_OR), Token(TT_EPSILON), Token(TT_RPAREN)]
 
         elif (tipo == TT_LBRACES):
+            # 0 O MAS VECES
+            '''
             self.listaTokens = [Token(TT_LBRACES), self.nodoIzquierdo,
                                 self.tokenOperacion, self.nodoDerecho, Token(TT_RBRACES)]
+            '''
+
+            self.listaTokens = [Token(TT_LPAREN), Token(TT_LPAREN), self.nodoIzquierdo, self.tokenOperacion, self.nodoDerecho, Token(
+                TT_RPAREN), Token(TT_MUL), Token(TT_ALFA), Token(TT_RPAREN)]
 
     def __repr__(self):
         try:
@@ -234,10 +248,12 @@ class NodoBinario:
             return f"({self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho})"
 
         elif (tipo == TT_LBRACKET):
-            return f"[{self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho}]"
+            # return f"[{self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho}]"
+            return f"(({self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho})|E)"
 
         elif (tipo == TT_LBRACES):
-            return f"{chr(123)}{self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho}{chr(125)}"
+            # return f"{chr(123)}{self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho}{chr(125)}"
+            return f"(({self.nodoIzquierdo}{diccionario[self.tokenOperacion.tipo]}{self.nodoDerecho})*A)"
 
 
 class NodoUnitario:
@@ -262,12 +278,22 @@ class NodoUnitario:
                 Token(TT_LPAREN), self.nodo, Token(TT_RPAREN)]
 
         elif (tipo == TT_LBRACKET):
+            # OPCION
+            '''
             self.listaTokens = [
                 Token(TT_LBRACKET), self.nodo, Token(TT_RBRACKET)]
+            '''
+            self.listaTokens = [Token(TT_LPAREN), self.nodo, Token(
+                TT_OR), Token(TT_EPSILON), Token(TT_RPAREN)]
 
         elif (tipo == TT_LBRACES):
+            # 0 O MAS VECES
+            '''
             self.listaTokens = [
                 Token(TT_LBRACES), self.nodo, Token(TT_RBRACES)]
+            '''
+            self.listaTokens = [Token(TT_LPAREN), self.nodo, Token(
+                TT_MUL), Token(TT_ALFA), Token(TT_RPAREN)]
 
     def __repr__(self):
         try:
@@ -279,10 +305,10 @@ class NodoUnitario:
             return f"({self.nodo.valor})"
 
         elif (tipo == TT_LBRACKET):
-            return f"[{self.nodo.valor}]"
+            return f"({self.nodo.valor}|E)"
 
         elif (tipo == TT_LBRACES):
-            return f"{chr(123)}{self.nodo.valor}{chr(125)}"
+            return f"({self.nodo.valor}*A)"
 
 #######################################
 # PARSER DE RESULTADOS
