@@ -97,6 +97,20 @@ def identificarSeccion(linea):
     print("ERROR")
 
 
+def procesarChar(seccion):
+    print("CHAAAAAR")
+    print()
+    expresiones = {}
+    for i in seccion:
+        igual = i.find("=")
+        punto = i.find(".")
+
+        expresiones[i[:igual].strip()] = i[igual + 1:punto].strip()
+
+    print(expresiones)
+    print()
+
+
 def separarSeccion(seccionActual, lista):
     '''
         Identifica las secciones del .atg y las separa
@@ -110,13 +124,8 @@ def separarSeccion(seccionActual, lista):
             break
         seccionActualLista.append(lista[i])
 
-    print(f'''
-        {seccionActual}
-        seccionActualLista = {seccionActualLista}
-    ''')
-
     # SEPARAR SECCIONES
-    separarSets(seccionActualLista)
+    separarSets(seccionActualLista, seccionActual)
 
     siguienteSeccion = identificarSeccion(residuo.pop(0))
     if (siguienteSeccion != "END"):
@@ -126,7 +135,7 @@ def separarSeccion(seccionActual, lista):
         print("IDENTIFICADO <END>")
 
 
-def separarSets(sets):
+def separarSets(sets, seccion):
     setsSeparados = []
     setTemportal = ""
     for element in sets:
@@ -140,8 +149,14 @@ def separarSets(sets):
 
         else:
             setTemportal += element
-    
-    print(setsSeparados)
+
+    print(f'''
+        {seccion}
+        seccionActualLista = {setsSeparados}
+    ''')
+
+    if (seccion == "CHARACTERS"):
+        procesarChar(setsSeparados)
 
 
 if __name__ == "__main__":
