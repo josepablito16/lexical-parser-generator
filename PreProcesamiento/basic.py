@@ -224,7 +224,6 @@ class NodoBinario:
             self.listaTokens = [Token(TT_LBRACKET), self.nodoIzquierdo,
                                 self.tokenOperacion, self.nodoDerecho, Token(TT_RBRACKET)]
             '''
-            print('ENTRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
             self.listaTokens = [Token(TT_LPAREN), Token(TT_LPAREN), self.nodoIzquierdo, self.tokenOperacion, self.nodoDerecho, Token(
                 TT_RPAREN), Token(TT_OR), Token(TT_EPSILON), Token(TT_RPAREN)]
 
@@ -425,7 +424,6 @@ class Parser:
             {a}b
             '''
             if(self.evaluarAgrupacionIndividual()):
-                print(f'AQUII {self.tokenActual.tipo == TT_INT}')
                 res = self.construirAgrupacionIndividual(res)
 
                 if (self.tokenActual.tipo == TT_INT):
@@ -535,14 +533,15 @@ def getListNodes(root):
         print(root)
 
     # esto se tiene que retornar
-    print(listaNodos)
+    return listaNodos
 
 
 def run(textoPlano):
     '''
     Metodo principal que llama al lexer y al parser
     '''
-
+    print()
+    print(textoPlano)
     lexer = Lexer(textoPlano)
     tokens, error = lexer.crearTokens()
     # print(f'\nTOKENS \n {tokens}\n')
@@ -552,6 +551,6 @@ def run(textoPlano):
     parser = Parser(tokens)
     ast = parser.parse()
 
-    getListNodes(ast.nodo)
+    print(getListNodes(ast.nodo))
 
     return ast.nodo, ast.error
