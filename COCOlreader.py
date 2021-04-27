@@ -1,4 +1,7 @@
 import sys
+from character import *
+from characterPreprocess import *
+import copy
 
 secciones = ['CHARACTERS', 'KEYWORDS', 'TOKENS', 'PRODUCTIONS']
 seccionesConsumidas = []
@@ -100,14 +103,41 @@ def identificarSeccion(linea):
 def procesarChar(seccion):
     print("CHAAAAAR")
     print()
-    expresiones = {}
+
+    expresionesTratadas = {}
     for i in seccion:
         igual = i.find("=")
         punto = i.find(".")
 
-        expresiones[i[:igual].strip()] = i[igual + 1:punto].strip()
+        key = i[:igual].strip()
+        item = i[igual + 1:punto].strip()
 
-    print(expresiones)
+        #########################
+        # se crea un objeto characterProcess
+        preProcess = CharacterPreprocess(item)
+
+        # se crean los tokens
+        preProcess.splitString()
+
+        # se opera para tener solo un set final
+        resultadoFinal, errores = preProcess.operar(
+            copy.deepcopy(expresionesTratadas))
+
+        if len(errores) > 0:
+            for error in errores:
+                print(error)
+
+        # Se guarda el resultado en el diccionario
+        print(f'''
+        {key}
+        {item}
+        {resultadoFinal}
+        ''')
+        expresionesTratadas[key] = copy.deepcopy(resultadoFinal)
+
+        ####################
+
+    print(expresionesTratadas)
     print()
 
 
