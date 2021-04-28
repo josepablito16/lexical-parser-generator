@@ -144,6 +144,38 @@ def procesarChar(seccion):
     print()
 
 
+def crearListaExpresion(expresion):
+    separador = ['{', '}', '|', ' ', '[', ']']
+    if (expresion.find("EXCEPT") != -1):
+        expresion = expresion[:expresion.find("EXCEPT")].strip()
+    print(expresion)
+    listaExpresion = []
+    temp = ""
+    isCharacter = False
+    for i in expresion:
+        if i == '"':
+            if not isCharacter:
+                isCharacter = True
+            if isCharacter:
+                for item in temp:
+                    listaExpresion.append(Character(item))
+                isCharacter = False
+                temp = ""
+            continue
+        if isCharacter:
+            temp += i
+        elif i not in separador:
+            temp += i
+        elif i in separador:
+            if len(temp) > 0:
+                listaExpresion.append(temp)
+            temp = ""
+            if i != " ":
+                listaExpresion.append(i)
+
+    print(listaExpresion)
+
+
 def procesarKeyWords(seccion):
     print("KEYWORDSSSSSSSSSSSSSSSSSSSSSS")
     print()
@@ -166,7 +198,27 @@ def procesarKeyWords(seccion):
         if error:
             print(str(error.asString()))
         else:
+            expresionesTratadas[key] = result
             print(str(result))
+
+    print(expresionesTratadas)
+
+
+def procesarTokens(seccion):
+    print("TOKENSSSSSSSSSSSSSSSSSSSSSS")
+    print()
+
+    expresionesTratadas = {}
+    for i in seccion:
+        igual = i.find("=")
+        punto = i.find(".")
+
+        key = i[:igual].strip()
+        item = i[igual + 1: punto].strip()
+        print(key)
+        # print(item)
+        crearListaExpresion(item)
+        print()
 
 
 def separarSeccion(seccionActual, lista):
@@ -218,6 +270,9 @@ def separarSets(sets, seccion):
 
     elif (seccion == "KEYWORDS"):
         procesarKeyWords(setsSeparados)
+
+    elif (seccion == "TOKENS"):
+        procesarTokens(setsSeparados)
 
 
 if __name__ == "__main__":
