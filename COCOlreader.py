@@ -2,6 +2,7 @@ import sys
 from character import *
 from characterPreprocess import *
 import copy
+import basic
 
 secciones = ['CHARACTERS', 'KEYWORDS', 'TOKENS', 'PRODUCTIONS']
 seccionesConsumidas = []
@@ -128,17 +129,44 @@ def procesarChar(seccion):
                 print(error)
 
         # Se guarda el resultado en el diccionario
+        '''
         print(f'''
         {key}
         {item}
         {resultadoFinal}
         ''')
+        '''
         expresionesTratadas[key] = copy.deepcopy(resultadoFinal)
 
         ####################
 
     print(expresionesTratadas)
     print()
+
+
+def procesarKeyWords(seccion):
+    print("KEYWORDSSSSSSSSSSSSSSSSSSSSSS")
+    print()
+
+    expresionesTratadas = {}
+    for i in seccion:
+        igual = i.find("=")
+        punto = i.find(".")
+
+        key = i[:igual].strip()
+        item = i[igual + 2: punto - 1].strip()
+        # print(key)
+        # print(item)
+        listaExpresion = []
+        for letra in item:
+            listaExpresion.append(Character(letra))
+
+        result, error = basic.run(listaExpresion)
+
+        if error:
+            print(str(error.asString()))
+        else:
+            print(str(result))
 
 
 def separarSeccion(seccionActual, lista):
@@ -187,6 +215,9 @@ def separarSets(sets, seccion):
 
     if (seccion == "CHARACTERS"):
         procesarChar(setsSeparados)
+
+    elif (seccion == "KEYWORDS"):
+        procesarKeyWords(setsSeparados)
 
 
 if __name__ == "__main__":

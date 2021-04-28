@@ -71,13 +71,13 @@ class Lexer:
         else:
             self.charActual = None
 
-    def explorar(self):
+    def explorar(self, salto=1):
         '''
         retorna el siguiente token si no ha llegado al final
         '''
 
-        if self.pos + 1 < len(self.textoPlano):
-            return self.textoPlano[self.pos + 1]
+        if self.pos + salto < len(self.textoPlano) and self.pos + salto > 0:
+            return self.textoPlano[self.pos + salto]
         else:
             return None
 
@@ -89,12 +89,18 @@ class Lexer:
 
         # Mientras no haya llegado al final
         while self.charActual != None:
+
+            if (isinstance(self.explorar(-1), Character) and isinstance(self.charActual, Character)):
+                tokens.append(Token(TT_CONCAT))
+
             if (isinstance(self.charActual, Character) and isinstance(self.explorar(), Character)):
                 tokens.append(Token(TT_INT, self.charActual))
                 tokens.append(Token(TT_CONCAT))
                 tokens.append(Token(TT_INT, self.explorar()))
+
                 self.avanzar()
                 self.avanzar()
+
             elif isinstance(self.charActual, Character):
                 tokens.append(Token(TT_INT, self.charActual))
                 self.avanzar()
@@ -106,8 +112,7 @@ class Lexer:
 				sino intenta reconocer el token y lo
 				agrega a la lista tokens
 				'''
-            elif self.charActual in DIGITOS:
-                tokens.append(self.crearNumero())
+
             elif self.charActual == '+':
                 tokens.append(Token(TT_PLUS))
                 self.avanzar()
@@ -413,8 +418,18 @@ class Parser:
             (a|b)c
             '''
             if (isinstance(res.nodo, NodoBinario) and self.explorar().tipo == TT_INT):
+                print(self.tokenActual)
+
                 res.success(NodoBinario(
                     res.nodo, Token(TT_CONCAT), NodoNumero(self.explorar())))
+                res.registrar(self.avanzar())
+                print('CILCO')
+                '''
+                while (self.tokenActual.tipo != TT_EOF):
+                    print(self.tokenActual)
+                    res.registrar(self.avanzar())
+                '''
+
                 return res
 
             '''
@@ -529,6 +544,8 @@ def getListNodes(root):
                 listaNodos += getSubListaNodes(i)
             else:
                 listaNodos.append(i)
+    elif isinstance(root, NodoNumero):
+        listaNodos.append(root)
     else:
         print(root)
 
@@ -544,13 +561,11 @@ def run(textoPlano):
     print(textoPlano)
     lexer = Lexer(textoPlano)
     tokens, error = lexer.crearTokens()
-    # print(f'\nTOKENS \n {tokens}\n')
+    print(f'\nTOKENS \n {tokens}\n')
     if error:
         return None, error
 
     parser = Parser(tokens)
     ast = parser.parse()
-
-    print(getListNodes(ast.nodo))
 
     return ast.nodo, ast.error

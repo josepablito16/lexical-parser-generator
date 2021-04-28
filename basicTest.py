@@ -40,6 +40,10 @@ assert getTest(['{', Character('a'), '|', Character('d'), '}', Character(
 assert getTest(['{', Character('a'), '}', Character(
     'c')]) == "(({'a'}*A).INT:{'c'})", "debería crear concatenacion y braces"
 
+# CASO WHILE
+assert getTest([Character('w'), Character('h'), Character('i'), Character('l'), Character(
+    'e')]) == "(((({'w'}.{'h'}).{'i'}).{'l'}).{'e'})", "debería crear concatenacion WHILE"
+
 print()
 
 '''
