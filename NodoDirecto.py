@@ -138,9 +138,11 @@ def mover(estado, letra):
     '''
     try:
         for i in estado.getRelaciones():
-            print("Mover")
-            print(i)
-            if (i[2] == letra):
+
+            print(f"Mover letra: {letra} set: {i[2]} = {letra in i[2] }")
+            print(type(i[2]))
+
+            if (letra in i[2]):
                 return i[1]
     except:
         return []

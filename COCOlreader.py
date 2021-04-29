@@ -394,5 +394,5 @@ if __name__ == "__main__":
     DFA_directo = d.construirFuncionesBasicas(a.armarArbol(expresionFinal))
     print(DFA_directo)
     print(f"""
-    Simulacion DFA = {d.simularDirecto(DFA_directo, "==")}
+    Simulacion DFA = {d.simularDirecto(DFA_directo, "11")}
     """)
