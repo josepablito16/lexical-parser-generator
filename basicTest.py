@@ -44,7 +44,7 @@ assert getTest(['{', Character('a'), '}', Character(
 assert getTest([Character('w'), Character('h'), Character('i'), Character('l'), Character(
     'e')]) == "(((({'w'}.{'h'}).{'i'}).{'l'}).{'e'})", "debería crear concatenacion WHILE"
 
-print()
+print(getTest([Character('c'), '{', Character('a'), '}']))
 
 '''
 assert getTest('2+5*3') == '(2+(5*3))', "debería crear paréntesis"

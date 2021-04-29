@@ -6,6 +6,8 @@ import basic
 
 secciones = ['CHARACTERS', 'KEYWORDS', 'TOKENS', 'PRODUCTIONS']
 seccionesConsumidas = []
+expresionesChar = {}
+expresionesTokens = {}
 
 
 def test():
@@ -142,9 +144,11 @@ def procesarChar(seccion):
 
     print(expresionesTratadas)
     print()
+    return expresionesTratadas
 
 
-def crearListaExpresion(expresion):
+def crearListaExpresion(expresion, chars):
+
     separador = ['{', '}', '|', ' ', '[', ']']
     if (expresion.find("EXCEPT") != -1):
         expresion = expresion[:expresion.find("EXCEPT")].strip()
@@ -173,7 +177,18 @@ def crearListaExpresion(expresion):
             if i != " ":
                 listaExpresion.append(i)
 
-    print(listaExpresion)
+    # merge de tokens con sets creados en CHARACTERS
+    for i in range(len(listaExpresion)):
+        if(isinstance(listaExpresion[i], str) and listaExpresion[i] not in separador):
+            listaExpresion[i] = chars[listaExpresion[i]]
+
+    # preprocesamiento tokens
+    result, error = basic.run(listaExpresion)
+
+    if error:
+        print(str(error.asString()))
+    else:
+        return result
 
 
 def procesarKeyWords(seccion):
@@ -202,9 +217,10 @@ def procesarKeyWords(seccion):
             print(str(result))
 
     print(expresionesTratadas)
+    return expresionesTratadas
 
 
-def procesarTokens(seccion):
+def procesarTokens(seccion, chars, tokens):
     print("TOKENSSSSSSSSSSSSSSSSSSSSSS")
     print()
 
@@ -217,8 +233,9 @@ def procesarTokens(seccion):
         item = i[igual + 1: punto].strip()
         print(key)
         # print(item)
-        crearListaExpresion(item)
-        print()
+        tokens[key] = crearListaExpresion(item, chars)
+
+    print(tokens)
 
 
 def separarSeccion(seccionActual, lista):
@@ -246,6 +263,9 @@ def separarSeccion(seccionActual, lista):
 
 
 def separarSets(sets, seccion):
+    global expresionesChar
+    global expresionesTokens
+
     setsSeparados = []
     setTemportal = ""
     for element in sets:
@@ -266,13 +286,17 @@ def separarSets(sets, seccion):
     ''')
 
     if (seccion == "CHARACTERS"):
-        procesarChar(setsSeparados)
+        expresionesChar = procesarChar(setsSeparados)
+        print("char retorna")
+        print(expresionesChar)
 
     elif (seccion == "KEYWORDS"):
-        procesarKeyWords(setsSeparados)
+        expresionesTokens = procesarKeyWords(setsSeparados)
 
     elif (seccion == "TOKENS"):
-        procesarTokens(setsSeparados)
+        print("en tokens entraaa")
+        print(expresionesChar)
+        procesarTokens(setsSeparados, expresionesChar, expresionesTokens)
 
 
 if __name__ == "__main__":

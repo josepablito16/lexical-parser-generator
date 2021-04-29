@@ -103,7 +103,13 @@ class Lexer:
 
             elif isinstance(self.charActual, Character):
                 tokens.append(Token(TT_INT, self.charActual))
+                try:
+                    if (self.explorar() in "[{("):
+                        tokens.append(Token(TT_CONCAT))
+                except:
+                    pass
                 self.avanzar()
+
             # si es un espacio o tab solo avanza
             elif self.charActual in ' \t':
                 self.avanzar()
@@ -214,6 +220,9 @@ class NodoBinario:
         self.crearAgrupacion()
 
     def crearAgrupacion(self):
+        #print(f"Nodo izquierdo = {self.nodoIzquierdo}")
+        #print(f"Nodo operacion = {self.tokenOperacion}")
+        #print(f"Nodo derecho = {self.nodoDerecho}")
         try:
             tipo = self.agrupacion.tipo
         except:
@@ -225,20 +234,11 @@ class NodoBinario:
 
         elif (tipo == TT_LBRACKET):
             # OPCION
-            '''
-            self.listaTokens = [Token(TT_LBRACKET), self.nodoIzquierdo,
-                                self.tokenOperacion, self.nodoDerecho, Token(TT_RBRACKET)]
-            '''
             self.listaTokens = [Token(TT_LPAREN), Token(TT_LPAREN), self.nodoIzquierdo, self.tokenOperacion, self.nodoDerecho, Token(
                 TT_RPAREN), Token(TT_OR), Token(TT_EPSILON), Token(TT_RPAREN)]
 
         elif (tipo == TT_LBRACES):
             # 0 O MAS VECES
-            '''
-            self.listaTokens = [Token(TT_LBRACES), self.nodoIzquierdo,
-                                self.tokenOperacion, self.nodoDerecho, Token(TT_RBRACES)]
-            '''
-
             self.listaTokens = [Token(TT_LPAREN), Token(TT_LPAREN), self.nodoIzquierdo, self.tokenOperacion, self.nodoDerecho, Token(
                 TT_RPAREN), Token(TT_MUL), Token(TT_ALFA), Token(TT_RPAREN)]
 
@@ -418,12 +418,12 @@ class Parser:
             (a|b)c
             '''
             if (isinstance(res.nodo, NodoBinario) and self.explorar().tipo == TT_INT):
-                print(self.tokenActual)
+                # print(self.tokenActual)
 
                 res.success(NodoBinario(
                     res.nodo, Token(TT_CONCAT), NodoNumero(self.explorar())))
                 res.registrar(self.avanzar())
-                print('CILCO')
+                # print('CILCO')
                 '''
                 while (self.tokenActual.tipo != TT_EOF):
                     print(self.tokenActual)
@@ -567,5 +567,5 @@ def run(textoPlano):
 
     parser = Parser(tokens)
     ast = parser.parse()
-
-    return ast.nodo, ast.error
+    print()
+    return getListNodes(ast.nodo), ast.error
