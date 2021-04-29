@@ -1,6 +1,7 @@
 import sys
 from character import *
 from characterPreprocess import *
+from tokenObj import *
 import copy
 import basic
 
@@ -8,6 +9,14 @@ secciones = ['CHARACTERS', 'KEYWORDS', 'TOKENS', 'PRODUCTIONS']
 seccionesConsumidas = []
 expresionesChar = {}
 expresionesTokens = {}
+diccionarioTokens = {}
+idDiccionarioTokens = 0
+
+TT_HASHTAG = 'HASHTAG'
+TT_CONCAT = 'CONCAT'
+TT_LPAREN = 'LPAREN'
+TT_RPAREN = 'RPAREN'
+TT_OR = 'OR'
 
 
 def test():
@@ -194,6 +203,8 @@ def crearListaExpresion(expresion, chars):
 def procesarKeyWords(seccion):
     print("KEYWORDSSSSSSSSSSSSSSSSSSSSSS")
     print()
+    global diccionarioTokens
+    global idDiccionarioTokens
 
     expresionesTratadas = {}
     for i in seccion:
@@ -202,6 +213,9 @@ def procesarKeyWords(seccion):
 
         key = i[:igual].strip()
         item = i[igual + 2: punto - 1].strip()
+
+        diccionarioTokens[idDiccionarioTokens] = key
+        idDiccionarioTokens += 1
         # print(key)
         # print(item)
         listaExpresion = []
@@ -224,6 +238,9 @@ def procesarTokens(seccion, chars, tokens):
     print("TOKENSSSSSSSSSSSSSSSSSSSSSS")
     print()
 
+    global diccionarioTokens
+    global idDiccionarioTokens
+
     expresionesTratadas = {}
     for i in seccion:
         igual = i.find("=")
@@ -231,11 +248,13 @@ def procesarTokens(seccion, chars, tokens):
 
         key = i[:igual].strip()
         item = i[igual + 1: punto].strip()
+
+        diccionarioTokens[idDiccionarioTokens] = key
+        idDiccionarioTokens += 1
+
         print(key)
         # print(item)
         tokens[key] = crearListaExpresion(item, chars)
-
-    print(tokens)
 
 
 def separarSeccion(seccionActual, lista):
@@ -299,6 +318,37 @@ def separarSets(sets, seccion):
         procesarTokens(setsSeparados, expresionesChar, expresionesTokens)
 
 
+def getHashTagId(nombre):
+    global diccionarioTokens
+    for key, value in diccionarioTokens.items():
+        if (nombre == value):
+            return key
+
+
+def crearOrGeneral():
+    global expresionesTokens
+
+    elementos = list(expresionesTokens.values())
+
+    temp = []
+    temp.append(Token(TT_LPAREN))
+    temp += elementos[0]
+    temp.append(Token(TT_OR))
+    temp += elementos[1]
+    temp.append(Token(TT_RPAREN))
+
+    for i in range(2, len(elementos)):
+        temp2 = temp.copy()
+        temp = []
+        temp.append(Token(TT_LPAREN))
+        temp += temp2
+        temp.append(Token(TT_OR))
+        temp.append(elementos[i])
+        temp.append(Token(TT_RPAREN))
+
+    print(temp)
+
+
 if __name__ == "__main__":
 
     # Limpieza de archivo .atg
@@ -314,3 +364,15 @@ if __name__ == "__main__":
     # Identificacion de secciones
     seccionInicial = identificarSeccion(listaLimpia.pop(0))
     separarSeccion(seccionInicial, listaLimpia)
+
+    # print(expresionesTokens)
+
+    # AUMENTAR EXPPRESIONES
+    print(diccionarioTokens)
+    print("============")
+    for key, value in expresionesTokens.items():
+        expresionesTokens[key] = [Token(TT_LPAREN)]+value+[Token(
+            TT_CONCAT), Token(TT_HASHTAG, getHashTagId(key)), Token(TT_RPAREN)]
+
+    # print(expresionesTokens)
+    crearOrGeneral()
