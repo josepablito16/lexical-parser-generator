@@ -5,6 +5,10 @@ from tokenObj import *
 import copy
 import basic
 
+#+++++++++ Directo
+from Arbol import *
+import Directo as d
+
 secciones = ['CHARACTERS', 'KEYWORDS', 'TOKENS', 'PRODUCTIONS']
 seccionesConsumidas = []
 expresionesChar = {}
@@ -343,10 +347,10 @@ def crearOrGeneral():
         temp.append(Token(TT_LPAREN))
         temp += temp2
         temp.append(Token(TT_OR))
-        temp.append(elementos[i])
+        temp += elementos[i]
         temp.append(Token(TT_RPAREN))
 
-    print(temp)
+    return temp
 
 
 if __name__ == "__main__":
@@ -375,4 +379,20 @@ if __name__ == "__main__":
             TT_CONCAT), Token(TT_HASHTAG, getHashTagId(key)), Token(TT_RPAREN)]
 
     # print(expresionesTokens)
-    crearOrGeneral()
+    expresionFinal = crearOrGeneral()
+
+    # print(expresionFinal)
+
+    # Algoritmo directo
+    a = Arbol()
+    '''
+    root = a.armarArbol(expresionFinal)
+    a.postOrder(root)
+    print(root)
+    '''
+
+    DFA_directo = d.construirFuncionesBasicas(a.armarArbol(expresionFinal))
+    print(DFA_directo)
+    print(f"""
+    Simulacion DFA = {d.simularDirecto(DFA_directo, "==")}
+    """)

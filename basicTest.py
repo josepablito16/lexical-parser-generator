@@ -1,5 +1,6 @@
 import basic
 from character import *
+from tokenObj import *
 #test = ['2+5*3', '2+2+2+2+2', '(1+2)/(1+2)', '123 123 123 +', '1+', '1 + d']
 
 
@@ -9,9 +10,10 @@ def getTest(texto):
     if error:
         return str(error.asString())
     else:
-        return str(result)
+        return result
 
 
+'''
 assert getTest([Character('a'), '|', Character('b'), '|', Character(
     'c')]) == "(({'a'}|{'b'})|{'c'})", "debería crear paréntesis"
 
@@ -43,8 +45,18 @@ assert getTest(['{', Character('a'), '}', Character(
 # CASO WHILE
 assert getTest([Character('w'), Character('h'), Character('i'), Character('l'), Character(
     'e')]) == "(((({'w'}.{'h'}).{'i'}).{'l'}).{'e'})", "debería crear concatenacion WHILE"
+'''
 
-print(getTest([Character('c'), '{', Character('a'), '}']))
+lista = getTest(['{', Character('a'), '}', Character('c')])
+for i in lista:
+    print(type(i))
+    if (isinstance(i, Token)):
+        print("es token")
+        print(i.tipo)
+    if (isinstance(i, basic.NodoNumero)):
+        print(i.token)
+        print(type(i.token.valor))
+    print()
 
 '''
 assert getTest('2+5*3') == '(2+(5*3))', "debería crear paréntesis"
