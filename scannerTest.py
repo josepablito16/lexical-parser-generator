@@ -1,5 +1,6 @@
 import pickle
 import copy
+import sys
 
 
 class NodoDirecto(object):
@@ -210,9 +211,17 @@ diccionarioTokens = pickle.load(open('diccionarioTokens', 'rb'))
 estadosHash = pickle.load(open('estadosHash', 'rb'))
 nodosHoja = pickle.load(open('nodosHoja', 'rb'))
 
+if (len(sys.argv) == 2):
+    # si tenemos el argumento del nombre del .txt
+    try:
+        with open(sys.argv[1]) as f:
+            lines = f.readlines()
 
-with open('test.txt') as f:
-    lines = f.readlines()
+            for linea in lines:
+                print(simularDirecto(DFA_directo, linea.strip(), diccionarioTokens))
+    except:
+        print("No fue posible abrir el archivo")
 
-    for linea in lines:
-        print(simularDirecto(DFA_directo, linea.strip(), diccionarioTokens))
+
+else:
+    print("Por favor, ingrese el nombre del archivo que quiere escanear")
