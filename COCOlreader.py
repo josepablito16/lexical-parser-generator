@@ -200,7 +200,9 @@ def crearListaExpresion(expresion, chars):
     result, error = basic.run(listaExpresion)
 
     if error:
+        print(listaExpresion)
         print(str(error.asString()))
+        sys.exit()
 
     else:
         return result
