@@ -132,6 +132,21 @@ def setEstadosFinales(DFA, estadosHash):
     return DFA
 
 
+def getNombreToken(estadosFinales, diccionarioTokens, estadosHash, nodosHoja):
+    print("\nEL TOKEN ES")
+    print(estadosFinales)
+    print(diccionarioTokens)
+    print(estadosHash)
+    estadosFinales = list(set(estadosHash).intersection(set(estadosFinales)))
+    idToken = None
+    for key, value in nodosHoja.items():
+        for i in estadosFinales:
+            if i in value:
+                idToken = key
+                token = diccionarioTokens[int(key[key.find('G') + 1:])]
+                return token
+
+
 def mover(estado, letra):
     '''
     Funcion mover utilizado para la simulacion

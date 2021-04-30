@@ -341,7 +341,7 @@ def construirFuncionesBasicas(nodo):
     return DFA
 
 
-def simularDirecto(DFA, cadena):
+def simularDirecto(DFA, cadena, diccionarioTokens):
     '''
     Simula DFA dada una cadena
     '''
@@ -359,7 +359,8 @@ def simularDirecto(DFA, cadena):
         s = nd.mover(DFA[s], i)
 
     print("final")
-    print(s)
+
+    print()
 
     print("Estados finales")
     print(nd.getEstadosFinales(DFA))
@@ -367,6 +368,8 @@ def simularDirecto(DFA, cadena):
     # Si la interseccion de S y los estados finales no es vacia
     # Entonces se acepta la cadena
     if (list(set.intersection(set(s), set(nd.getEstadosFinales(DFA)))) != []):
-        return "SI"
+        token = nd.getNombreToken(DFA[s].estados, diccionarioTokens,
+                                  estadosHash, nodosHoja)
+        return f"SI ES {token}"
     else:
         return "NO"
