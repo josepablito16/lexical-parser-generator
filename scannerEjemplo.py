@@ -1,3 +1,4 @@
+
 # Scanner generado por proyecto Jose Cifuentes
 # Universidad del Valle de Guatemala
 import pickle
@@ -212,3 +213,5 @@ if (len(sys.argv) == 2):
 
 else:
     print("Por favor, ingrese el nombre del archivo que quiere escanear")
+
+        
