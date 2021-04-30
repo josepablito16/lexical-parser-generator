@@ -200,7 +200,6 @@ def crearListaExpresion(expresion, chars):
     result, error = basic.run(listaExpresion)
 
     if error:
-        print(listaExpresion)
         print(str(error.asString()))
         sys.exit()
 
@@ -393,8 +392,8 @@ if __name__ == "__main__":
     # print(expresionesTokens)
     expresionFinal = crearOrGeneral()
 
-    print("ExpresionFinal")
-    print(expresionFinal)
+    # print("ExpresionFinal")
+    # print(expresionFinal)
 
     # Algoritmo directo
     a = Arbol()
@@ -635,8 +634,4 @@ else:
     )
 
     f.close()
-
-    # print(DFA_directo)
-    print(f"""
-    Simulacion DFA = {d.simularDirecto(DFA_directo, "1234",diccionarioTokens)}
-    """)
+    print(f"scanner{nombreCompiler}.py generado correctamente!")

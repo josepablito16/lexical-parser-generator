@@ -57,7 +57,6 @@ class Arbol(object):
             Nodo raiz del arbol
 
         '''
-        print()
         # Si no existe raiz no seguimos
         if(Node == None):
             return
@@ -76,7 +75,7 @@ class Arbol(object):
                 self.pila.pop()
                 self.pila.pop()
 
-                print(f"({N2}|{N1})")
+                # print(f"({N2}|{N1})")
 
                 self.pila.append(f"({N2}|{N1})")
 
@@ -87,7 +86,7 @@ class Arbol(object):
                 self.pila.pop()
                 self.pila.pop()
 
-                print(f"({N2}*{N1})")
+                # print(f"({N2}*{N1})")
 
                 self.pila.append(f"({N2}*{N1})")
 
@@ -98,7 +97,7 @@ class Arbol(object):
                 self.pila.pop()
                 self.pila.pop()
 
-                print(f"({N2}.{N1})")
+                # print(f"({N2}.{N1})")
                 self.pila.append(f"({N2}.{N1})")
 
         else:

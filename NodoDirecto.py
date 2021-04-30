@@ -126,9 +126,9 @@ def setEstadosFinales(DFA, estadosHash):
     Dado un DFA pone todos los nodos estado final
     que contengan un id dado []
     '''
-    print("DFA")
+    # print("DFA")
     for id, nodo in DFA.items():
-        print(f"{id} {nodo.relaciones}")
+        #print(f"{id} {nodo.relaciones}")
         for idHash in estadosHash:
             if (idHash in nodo.getEstados()):
                 nodo.setEstadoFinal()
@@ -136,10 +136,10 @@ def setEstadosFinales(DFA, estadosHash):
 
 
 def getNombreToken(estadosFinales, diccionarioTokens, estadosHash, nodosHoja):
-    print("\nEL TOKEN ES")
-    print(estadosFinales)
-    print(diccionarioTokens)
-    print(estadosHash)
+    #print("\nEL TOKEN ES")
+    # print(estadosFinales)
+    # print(diccionarioTokens)
+    # print(estadosHash)
     estadosFinales = list(set(estadosHash).intersection(set(estadosFinales)))
     idToken = None
     for key, value in nodosHoja.items():

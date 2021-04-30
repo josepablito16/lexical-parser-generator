@@ -547,7 +547,8 @@ def getListNodes(root):
     elif isinstance(root, NodoNumero):
         listaNodos.append(root)
     else:
-        print(root)
+        pass
+        # print(root)
 
     # esto se tiene que retornar
     return listaNodos
@@ -557,15 +558,15 @@ def run(textoPlano):
     '''
     Metodo principal que llama al lexer y al parser
     '''
-    print()
-    print(textoPlano)
+    # print()
+    # print(textoPlano)
     lexer = Lexer(textoPlano)
     tokens, error = lexer.crearTokens()
-    print(f'\nTOKENS \n {tokens}\n')
+    #print(f'\nTOKENS \n {tokens}\n')
     if error:
         return None, error
 
     parser = Parser(tokens)
     ast = parser.parse()
-    print()
+    # print()
     return getListNodes(ast.nodo), ast.error

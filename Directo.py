@@ -324,19 +324,19 @@ def construirFuncionesBasicas(nodo):
     postOrder(nodo)
 
     DFA = construirDFA(nodo.getFirstPos())
-    print()
-    print("followPos")
-    print(followPos)
+    # print()
+    # print("followPos")
+    # print(followPos)
 
-    print()
-    print("nodosHoja")
-    print(nodosHoja)
-    print()
+    # print()
+    # print("nodosHoja")
+    # print(nodosHoja)
+    # print()
 
-    print()
-    print("estadosHash")
-    print(estadosHash)
-    print()
+    # print()
+    # print("estadosHash")
+    # print(estadosHash)
+    # print()
 
     return DFA, estadosHash, nodosHoja
 
