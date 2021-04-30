@@ -123,12 +123,12 @@ def postOrder(Node):
 
     else:
         if (isinstance(Node.getValue(), character.Character)):
-            print("NUM")
+            # print("NUM")
             calcularFirstLastPosHoja(Node)
             calcularNullableHoja(Node)
 
         elif (Node.getValue().tipo in numeros):
-            print("NUM")
+            # print("NUM")
             calcularFirstLastPosHoja(Node)
             calcularNullableHoja(Node)
 
@@ -228,11 +228,11 @@ def calcularNullableHoja(nodo):
 def calcularFirstLastPosHoja(nodo):
     global contador
 
-    print()
-    print("calcularFirstLastPosHoja")
-    print(nodo.getValue())
-    print(type(nodo.getValue()))
-    print()
+    # print()
+    # print("calcularFirstLastPosHoja")
+    # print(nodo.getValue())
+    # print(type(nodo.getValue()))
+    # print()
     if isinstance(nodo.getValue(), character.Character):
         try:
             nodosHoja[nodo.getValue().getId()].append(contador)
@@ -349,18 +349,17 @@ def simularDirecto(DFA, cadena, diccionarioTokens):
     s = nd.getEstadosIniciales(DFA)[0]
 
     print()
-    print("estados iniciales")
-    print(s)
+    print(f"estados iniciales {s}")
     print()
-
-    sTemp = []
+    print("SIMULACION")
     for i in cadena:
-        print(s)
+        print()
+        print(f"elemento {i} estados inicial: {s}")
         if (s == []):
-            s = sTemp
             break
         s = nd.mover(DFA[s], i)
-        sTemp = s
+        print(f"elemento {i} estados final: {s}")
+        print()
 
     print("final")
 

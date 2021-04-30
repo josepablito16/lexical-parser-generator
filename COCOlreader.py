@@ -11,6 +11,7 @@ import Directo as d
 
 import pickle
 
+
 secciones = ['CHARACTERS', 'KEYWORDS', 'TOKENS', 'PRODUCTIONS']
 seccionesConsumidas = []
 expresionesChar = {}
@@ -25,23 +26,18 @@ TT_RPAREN = 'RPAREN'
 TT_OR = 'OR'
 
 
-def test():
-    '''
-    Finaliza la ejecucion del programa
-    '''
-    sys.exit()
-
-
 def getCompilerId(linea):
     '''
                     Revisa si en la linea contiene la palabra reservada COMPILER
                     y extrae el identificador
     '''
     if (linea[:linea.find(" ")] == "COMPILER" and len(linea[linea.find(" "):]) > 0):
+        """
         print(f'''
-			IDENTIFICADO <COMPILER>
-			ident = {linea[linea.find(" "):]}
-		''')
+                        IDENTIFICADO <COMPILER>
+                        ident = {linea[linea.find(" "):]}
+                ''')
+        """
         return str(linea[linea.find(" "):]).strip()
     else:
         print("ERROR")
@@ -107,9 +103,11 @@ def identificarSeccion(linea):
         Valida que la linea contenga una seccion no consumida
     '''
     if (linea.strip() in secciones and linea.strip() not in seccionesConsumidas):
+        """
         print(f'''
-			IDENTIFICADO <{linea.strip()}>
-		''')
+                        IDENTIFICADO <{linea.strip()}>
+                ''')
+        """
         seccionesConsumidas.append(linea.strip())
         return linea.strip()
 
@@ -120,8 +118,8 @@ def identificarSeccion(linea):
 
 
 def procesarChar(seccion):
-    print("CHAAAAAR")
-    print()
+    # print("CHAAAAAR")
+    # print()
 
     expresionesTratadas = {}
     for i in seccion:
@@ -147,19 +145,13 @@ def procesarChar(seccion):
                 print(error)
 
         # Se guarda el resultado en el diccionario
-        '''
-        print(f'''
-        {key}
-        {item}
-        {resultadoFinal}
-        ''')
-        '''
+
         expresionesTratadas[key] = copy.deepcopy(resultadoFinal)
 
         ####################
 
-    print(expresionesTratadas)
-    print()
+    # print(expresionesTratadas)
+    # print()
     return expresionesTratadas
 
 
@@ -168,7 +160,7 @@ def crearListaExpresion(expresion, chars):
     separador = ['{', '}', '|', ' ', '[', ']']
     if (expresion.find("EXCEPT") != -1):
         expresion = expresion[:expresion.find("EXCEPT")].strip()
-    print(expresion)
+    # print(expresion)
     listaExpresion = []
     temp = ""
     isCharacter = False
@@ -208,8 +200,8 @@ def crearListaExpresion(expresion, chars):
 
 
 def procesarKeyWords(seccion):
-    print("KEYWORDSSSSSSSSSSSSSSSSSSSSSS")
-    print()
+    # print("KEYWORDSSSSSSSSSSSSSSSSSSSSSS")
+    # print()
     global diccionarioTokens
     global idDiccionarioTokens
 
@@ -220,6 +212,7 @@ def procesarKeyWords(seccion):
 
         key = i[:igual].strip()
         item = i[igual + 2: punto - 1].strip()
+        item = item.replace('"', '')
 
         diccionarioTokens[idDiccionarioTokens] = key
         idDiccionarioTokens += 1
@@ -235,15 +228,15 @@ def procesarKeyWords(seccion):
             print(str(error.asString()))
         else:
             expresionesTratadas[key] = result
-            print(str(result))
+            # print(str(result))
 
-    print(expresionesTratadas)
+    # print(expresionesTratadas)
     return expresionesTratadas
 
 
 def procesarTokens(seccion, chars, tokens):
-    print("TOKENSSSSSSSSSSSSSSSSSSSSSS")
-    print()
+    # print("TOKENSSSSSSSSSSSSSSSSSSSSSS")
+    # print()
 
     global diccionarioTokens
     global idDiccionarioTokens
@@ -259,7 +252,7 @@ def procesarTokens(seccion, chars, tokens):
         diccionarioTokens[idDiccionarioTokens] = key
         idDiccionarioTokens += 1
 
-        print(key)
+        # print(key)
         # print(item)
         tokens[key] = crearListaExpresion(item, chars)
 
@@ -285,7 +278,8 @@ def separarSeccion(seccionActual, lista):
         separarSeccion(siguienteSeccion, residuo)
 
     if (siguienteSeccion == "END"):
-        print("IDENTIFICADO <END>")
+        #print("IDENTIFICADO <END>")
+        pass
 
 
 def separarSets(sets, seccion):
@@ -305,23 +299,24 @@ def separarSets(sets, seccion):
 
         else:
             setTemportal += element
-
+    """
     print(f'''
         {seccion}
         seccionActualLista = {setsSeparados}
     ''')
+    """
 
     if (seccion == "CHARACTERS"):
         expresionesChar = procesarChar(setsSeparados)
-        print("char retorna")
-        print(expresionesChar)
+        #print("char retorna")
+        # print(expresionesChar)
 
     elif (seccion == "KEYWORDS"):
         expresionesTokens = procesarKeyWords(setsSeparados)
 
     elif (seccion == "TOKENS"):
-        print("en tokens entraaa")
-        print(expresionesChar)
+        #print("en tokens entraaa")
+        # print(expresionesChar)
         procesarTokens(setsSeparados, expresionesChar, expresionesTokens)
 
 
@@ -358,8 +353,13 @@ def crearOrGeneral():
 
 if __name__ == "__main__":
 
+    if (len(sys.argv) == 2):
+        nombreAtg = sys.argv[1]
+    else:
+        print("Por favor, ingrese el nombre de la definicion del scanner")
+        sys.exit()
     # Limpieza de archivo .atg
-    listaLimpia = eliminarEspacios(openFile('./test.atg'))
+    listaLimpia = eliminarEspacios(openFile(nombreAtg))
 
     listaLimpia = eliminarComentarios(listaLimpia)
 
@@ -375,8 +375,8 @@ if __name__ == "__main__":
     # print(expresionesTokens)
 
     # AUMENTAR EXPPRESIONES
-    print(diccionarioTokens)
-    print("============")
+    # print(diccionarioTokens)
+    # print("============")
     for key, value in expresionesTokens.items():
         expresionesTokens[key] = [Token(TT_LPAREN)]+value+[Token(
             TT_CONCAT), Token(TT_HASHTAG, getHashTagId(key)), Token(TT_RPAREN)]
@@ -384,7 +384,8 @@ if __name__ == "__main__":
     # print(expresionesTokens)
     expresionFinal = crearOrGeneral()
 
-    # print(expresionFinal)
+    print("ExpresionFinal")
+    print(expresionFinal)
 
     # Algoritmo directo
     a = Arbol()
@@ -626,7 +627,7 @@ else:
 
     f.close()
 
-    print(DFA_directo)
+    # print(DFA_directo)
     print(f"""
-    Simulacion DFA = {d.simularDirecto(DFA_directo, "if",diccionarioTokens)}
+    Simulacion DFA = {d.simularDirecto(DFA_directo, "1234",diccionarioTokens)}
     """)

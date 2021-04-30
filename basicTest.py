@@ -47,16 +47,9 @@ assert getTest([Character('w'), Character('h'), Character('i'), Character('l'), 
     'e')]) == "(((({'w'}.{'h'}).{'i'}).{'l'}).{'e'})", "debería crear concatenacion WHILE"
 '''
 
-lista = getTest(['{', Character('a'), '}', Character('c')])
-for i in lista:
-    print(type(i))
-    if (isinstance(i, Token)):
-        print("es token")
-        print(i.tipo)
-    if (isinstance(i, basic.NodoNumero)):
-        print(i.token)
-        print(type(i.token.valor))
-    print()
+lista = getTest([Character('0123456789ABCDEF'),
+                 '{', Character('0123456789ABCDEF'), '}', Character('('), Character('H'), Character(')')])
+print(lista)
 
 '''
 assert getTest('2+5*3') == '(2+(5*3))', "debería crear paréntesis"

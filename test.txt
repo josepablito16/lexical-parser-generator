@@ -4,3 +4,12 @@ while
 ///
 ==
 >=
+==
+!=
+>=
+<=
+>
+< 
+holahopasdfasd
+ho
+A0()

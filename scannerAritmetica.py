@@ -1,3 +1,11 @@
+
+# Scanner generado por proyecto Jose Cifuentes
+# Universidad del Valle de Guatemala
+import pickle
+import copy
+import sys
+
+
 class NodoDirecto(object):
     """
     Este objeto guarda toda la informacion de un nodo
@@ -66,9 +74,6 @@ class RelacionDirecto(object):
         self.nombreRelacion = nombreRelacion
         self.idNodo2 = idNodo2
 
-    def __repr__(self):
-        return f"{self.idNodo1} {self.nombreRelacion} {self.idNodo2}"
-
     def getRelacion(self):
         return [self.idNodo1, self.idNodo2, self.nombreRelacion]
 
@@ -82,9 +87,9 @@ class RelacionDirecto(object):
 
 # Funciones complementarias
 def getLetraDeEstados(DFA, estados):
-    '''
+    """
     Retorna la letra que le corresponde a un estado
-    '''
+    """
     for letra, nodo in DFA.items():
         if(
             list(set(nodo.getEstados()) - set(estados))
@@ -122,13 +127,13 @@ def getRelacionesDFA(DFA):
 
 
 def setEstadosFinales(DFA, estadosHash):
-    '''
+    """
     Dado un DFA pone todos los nodos estado final
     que contengan un id dado []
-    '''
-    print("DFA")
+    """
+
     for id, nodo in DFA.items():
-        print(f"{id} {nodo.relaciones}")
+
         for idHash in estadosHash:
             if (idHash in nodo.getEstados()):
                 nodo.setEstadoFinal()
@@ -136,10 +141,7 @@ def setEstadosFinales(DFA, estadosHash):
 
 
 def getNombreToken(estadosFinales, diccionarioTokens, estadosHash, nodosHoja):
-    print("\nEL TOKEN ES")
-    print(estadosFinales)
-    print(diccionarioTokens)
-    print(estadosHash)
+
     estadosFinales = list(set(estadosHash).intersection(set(estadosFinales)))
     idToken = None
     for key, value in nodosHoja.items():
@@ -151,14 +153,11 @@ def getNombreToken(estadosFinales, diccionarioTokens, estadosHash, nodosHoja):
 
 
 def mover(estado, letra):
-    '''
+    """
     Funcion mover utilizado para la simulacion
-    '''
+    """
     try:
         for i in estado.getRelaciones():
-
-            #print(f"Mover letra: {letra} set: {i[2]} = {letra in i[2] }")
-            # print(type(i[2]))
 
             if (letra in i[2]):
                 return i[1]
@@ -166,3 +165,53 @@ def mover(estado, letra):
         return []
 
     return []
+
+
+def simularDirecto(DFA, cadena, diccionarioTokens):
+    """
+    Simula DFA dada una cadena
+    """
+
+    s = getEstadosIniciales(DFA)[0]
+
+    for i in cadena:
+
+        if (s == []):
+            break
+        s = mover(DFA[s], i)
+
+    # Si la interseccion de S y los estados finales no es vacia
+    # Entonces se acepta la cadena
+    if (list(set.intersection(set(s), set(getEstadosFinales(DFA)))) != []):
+        token = getNombreToken(DFA[s].estados, diccionarioTokens,
+                               estadosHash, nodosHoja)
+        return f"Cadena: {cadena} es token: {token}"
+    else:
+        return f"Cadena: {cadena} no identificado"
+
+
+try:
+    # Intentamos abrir los archivos auxiliares del scanner
+    DFA_directo = pickle.load(open('DFA_directo', 'rb'))
+    diccionarioTokens = pickle.load(open('diccionarioTokens', 'rb'))
+    estadosHash = pickle.load(open('estadosHash', 'rb'))
+    nodosHoja = pickle.load(open('nodosHoja', 'rb'))
+except:
+    print("No fue posible abrir los archivos auxiliares del scanner")
+
+if (len(sys.argv) == 2):
+    # si tenemos el argumento del nombre del .txt
+    try:
+        with open(sys.argv[1]) as f:
+            lines = f.readlines()
+
+            for linea in lines:
+                print(simularDirecto(DFA_directo, linea.strip(), diccionarioTokens))
+    except:
+        print("No fue posible abrir el archivo")
+
+
+else:
+    print("Por favor, ingrese el nombre del archivo que quiere escanear")
+
+        
