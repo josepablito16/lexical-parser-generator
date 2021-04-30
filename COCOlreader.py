@@ -9,6 +9,8 @@ import basic
 from Arbol import *
 import Directo as d
 
+import pickle
+
 secciones = ['CHARACTERS', 'KEYWORDS', 'TOKENS', 'PRODUCTIONS']
 seccionesConsumidas = []
 expresionesChar = {}
@@ -390,8 +392,14 @@ if __name__ == "__main__":
     a.postOrder(root)
     print(root)
     '''
+    DFA_directo, estadosHash, nodosHoja = d.construirFuncionesBasicas(
+        a.armarArbol(expresionFinal))
 
-    DFA_directo = d.construirFuncionesBasicas(a.armarArbol(expresionFinal))
+    pickle.dump(DFA_directo, open('DFA_directo', 'wb'))
+    pickle.dump(diccionarioTokens, open('diccionarioTokens', 'wb'))
+    pickle.dump(estadosHash, open('estadosHash', 'wb'))
+    pickle.dump(nodosHoja, open('nodosHoja', 'wb'))
+
     print(DFA_directo)
     print(f"""
     Simulacion DFA = {d.simularDirecto(DFA_directo, "if",diccionarioTokens)}

@@ -338,7 +338,7 @@ def construirFuncionesBasicas(nodo):
     print(estadosHash)
     print()
 
-    return DFA
+    return DFA, estadosHash, nodosHoja
 
 
 def simularDirecto(DFA, cadena, diccionarioTokens):
@@ -353,14 +353,16 @@ def simularDirecto(DFA, cadena, diccionarioTokens):
     print(s)
     print()
 
+    sTemp = []
     for i in cadena:
+        print(s)
         if (s == []):
+            s = sTemp
             break
         s = nd.mover(DFA[s], i)
+        sTemp = s
 
     print("final")
-
-    print()
 
     print("Estados finales")
     print(nd.getEstadosFinales(DFA))

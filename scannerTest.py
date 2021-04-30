@@ -1,3 +1,5 @@
+import pickle
+
 class NodoDirecto(object):
     """
     Este objeto guarda toda la informacion de un nodo
@@ -163,3 +165,53 @@ def mover(estado, letra):
         return []
 
     return []
+
+
+
+
+
+def simularDirecto(DFA, cadena, diccionarioTokens):
+    '''
+    Simula DFA dada una cadena
+    '''
+
+    s = getEstadosIniciales(DFA)[0]
+
+    print()
+    print("estados iniciales")
+    print(s)
+    print()
+
+    sTemp = []
+    for i in cadena:
+        print(s)
+        if (s == []):
+            s = sTemp
+            break
+        s = mover(DFA[s], i)
+        sTemp = s
+
+    print("final")
+
+    
+
+    print("Estados finales")
+    print(getEstadosFinales(DFA))
+
+    # Si la interseccion de S y los estados finales no es vacia
+    # Entonces se acepta la cadena
+    if (list(set.intersection(set(s), set(getEstadosFinales(DFA)))) != []):
+        token = getNombreToken(DFA[s].estados, diccionarioTokens,
+                                  estadosHash, nodosHoja)
+        return f"SI ES {token}"
+    else:
+        return "NO"
+
+DFA_directo = pickle.load(open('DFA_directo', 'rb'))
+diccionarioTokens = pickle.load(open('diccionarioTokens', 'rb'))
+estadosHash = pickle.load(open('estadosHash', 'rb'))
+nodosHoja = pickle.load(open('nodosHoja', 'rb'))
+
+print(f"""
+    Simulacion DFA = {simularDirecto(DFA_directo, "if",diccionarioTokens)}
+    """)
