@@ -120,15 +120,16 @@ def identificarSeccion(linea):
 def procesarChar(seccion):
     # print("CHAAAAAR")
     # print()
+    errorControl = False
 
     expresionesTratadas = {}
+
     for i in seccion:
         igual = i.find("=")
         punto = i.find(".")
 
         key = i[:igual].strip()
         item = i[igual + 1:punto].strip()
-
         #########################
         # se crea un objeto characterProcess
         preProcess = CharacterPreprocess(item)
@@ -141,7 +142,10 @@ def procesarChar(seccion):
             copy.deepcopy(expresionesTratadas))
 
         if len(errores) > 0:
+            errorControl = True
             for error in errores:
+                print()
+                print(i)
                 print(error)
 
         # Se guarda el resultado en el diccionario
@@ -152,6 +156,8 @@ def procesarChar(seccion):
 
     # print(expresionesTratadas)
     # print()
+    if (errorControl):
+        sys.exit()
     return expresionesTratadas
 
 
@@ -195,6 +201,7 @@ def crearListaExpresion(expresion, chars):
 
     if error:
         print(str(error.asString()))
+
     else:
         return result
 

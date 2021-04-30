@@ -5,7 +5,7 @@ import string
 
 # CONSTANTES
 CHAR_IDENTIFICADOR = string.ascii_lowercase + \
-    string.ascii_uppercase + "_" + "1234567890"
+    string.ascii_uppercase + "_" + "1234567890" + "()"
 
 CHAR_OPERADOR = "-+"
 
@@ -77,7 +77,12 @@ class CharacterPreprocess:
         self.retroceder()
 
         # print(tempIdentificador)
-        self.operaciones.append(Token(TT_ID, tempIdentificador))
+        if (tempIdentificador.find('CHR(') != -1):
+            tempString = chr(
+                int(tempIdentificador[tempIdentificador.find('(')+1:tempIdentificador.find(')')]))
+            self.operaciones.append(Token(TT_CHAR, Character(tempString)))
+        else:
+            self.operaciones.append(Token(TT_ID, tempIdentificador))
 
     def plainString(self):
         tempString = ""

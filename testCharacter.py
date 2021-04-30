@@ -25,8 +25,11 @@ expresiones = {
     'digit': '"0123456789"',
     'hexdigit': 'digit + "ABCDEFabcdef"',
     'prueba': 'letter - "ABCDEFabcdef"',
-    'prueba2': 'letter2 - "ABCDEFabcdef"',
-    'prueba3': '"ABCDEFabcdef" ++',
+    # 'prueba2': 'letter2 - "ABCDEFabcdef"',
+    # 'prueba3': '"ABCDEFabcdef" ++',
+    'tab': 'CHR(9)',
+    'eol': 'CHR(10)',
+    'blanco': 'tab+" "',
 }
 
 expresionesTratadas = {}
