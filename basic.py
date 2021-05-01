@@ -451,7 +451,7 @@ class Parser:
 
     def factor(self):
         '''
-        factor : INT | FLOAT
+        factor : CHAR 
         '''
         res = ParseResultados()
         token = self.tokenActual
@@ -480,13 +480,13 @@ class Parser:
 
     def term(self):
         '''
-        term : factor ((MUL | DIV) factor)*
+        term : factor (CONCAT factor)*
         '''
         return self.bin_op(self.factor, (TT_MUL, TT_DIV, TT_CONCAT))
 
     def expr(self):
         '''
-        expr : term ((PLUS | MINUS) term)*
+        expr : term (OR term)*
         '''
         return self.bin_op(self.term, (TT_PLUS, TT_MINUS, TT_OR))
 

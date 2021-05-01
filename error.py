@@ -34,7 +34,7 @@ class IllegalCharError(Error):
 class InvalidSyntaxError(Error):
     '''
     Clase que hereda de la clase Error, especificamente para
-    caracteres que nuestro programa no reconoce
+    sintaxis que nuestro programa no reconoce
     '''
 
     def __init__(self, details):

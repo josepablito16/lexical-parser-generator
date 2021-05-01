@@ -162,7 +162,11 @@ def procesarChar(seccion):
 
 
 def crearListaExpresion(expresion, chars):
-
+    '''
+    separamos la expresion en lista
+    Ej
+    [variable, '{', variable2 ,'}']
+    '''
     separador = ['{', '}', '|', ' ', '[', ']']
     if (expresion.find("EXCEPT") != -1):
         expresion = expresion[:expresion.find("EXCEPT")].strip()
@@ -291,6 +295,9 @@ def separarSeccion(seccionActual, lista):
 
 
 def separarSets(sets, seccion):
+    '''
+    Separa expresiones dentro de una seccion
+    '''
     global expresionesChar
     global expresionesTokens
 
@@ -336,6 +343,9 @@ def getHashTagId(nombre):
 
 
 def crearOrGeneral():
+    '''
+    Creamos un super Or de todas las expresiones de los tokens
+    '''
     global expresionesTokens
 
     elementos = list(expresionesTokens.values())

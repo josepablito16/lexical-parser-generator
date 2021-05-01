@@ -44,6 +44,9 @@ class CharacterPreprocess:
             self.posActual -= 1
 
     def splitString(self):
+        '''
+        Creamos los tokens
+        '''
         while self.posActual != None:
             self.avanzarChar()
             if self.posActual == None:
@@ -68,6 +71,11 @@ class CharacterPreprocess:
     def identificador(self):
         tempIdentificador = ""
         self.avanzarChar()
+
+        '''
+        Caso identificador character anteriormente
+        definido en el .atg
+        '''
         while self.string[self.posActual] in CHAR_IDENTIFICADOR:
             tempIdentificador += self.string[self.posActual]
             self.avanzarChar()
@@ -76,7 +84,9 @@ class CharacterPreprocess:
 
         self.retroceder()
 
-        # print(tempIdentificador)
+        '''
+        Caso CHR(23)
+        '''
         if (tempIdentificador.find('CHR(') != -1):
             tempString = chr(
                 int(tempIdentificador[tempIdentificador.find('(')+1:tempIdentificador.find(')')]))
@@ -85,6 +95,9 @@ class CharacterPreprocess:
             self.operaciones.append(Token(TT_ID, tempIdentificador))
 
     def plainString(self):
+        '''
+        Caso "abcd"
+        '''
         tempString = ""
         self.avanzarChar()
         while self.string[self.posActual] != '"':
@@ -95,6 +108,9 @@ class CharacterPreprocess:
         self.operaciones.append(Token(TT_CHAR, Character(tempString)))
 
     def operar(self, expresionesTratadas):
+        '''
+        Operamos dada una lista de tokens
+        '''
         self.posActual = -1
         operacionCola = []
         errores = []
